@@ -1,0 +1,7 @@
+%h1 Partners
+%h2 Found #{@partner_count} partners
+
+- @partners.each do |partner|
+  %article.partner
+    %h3= link_to partner.name, partner_path(partner.id)
+    %p= partner.summary

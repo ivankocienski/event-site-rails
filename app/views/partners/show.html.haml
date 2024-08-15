@@ -1,0 +1,6 @@
+%h1= @partner.name
+- if @partner.url.present?
+  %p
+    %a{ href: @partner.url, target: '_blank' }= @partner.url
+
+%p= @partner.description

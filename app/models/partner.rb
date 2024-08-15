@@ -52,16 +52,17 @@ class Partner
   end
 
   def self.count
-    @partners.count
+    (@partners || []).count
   end
 
   def self.find_all_by_name
-    @partners.sort { |a, b| a.name <=> b.name }
+    (@partners || []).sort { |a, b| a.name <=> b.name }
   end
 
   def self.find_by_id(want_id)
+    return unless want_id.present?
     want_id = want_id.to_i
-    @partners.find { |partner| partner.id == want_id }
+    (@partners || []).find { |partner| partner.id == want_id }
   end
 end
 

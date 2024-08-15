@@ -1,20 +1,20 @@
 require 'rails_helper'
 
-RSpec.describe "Partners", type: :request do
+RSpec.describe "Events", type: :request do
   before :all do
-    Partner.load_from_fixture(Rails.root.join('db/fixtures/partners.json'))
+    Event.load_from_fixture(Rails.root.join('db/fixtures/events.json'))
   end
 
-  describe "/partners" do
+  describe "GET /events" do
     it "returns http success" do
-      get "/partners"
+      get "/events"
       expect(response).to have_http_status(:success)
     end
   end
 
-  describe "/partners/:id" do
+  describe "/event/:id" do
     it "returns http success" do
-      get "/partners/123"
+      get "/events/361005"
       expect(response).to have_http_status(:success)
     end
   end

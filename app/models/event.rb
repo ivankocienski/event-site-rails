@@ -54,7 +54,7 @@ class Event
   def self.find_on_day(date)
     date = date.beginning_of_day
 
-    (@events || []).filter { |event| event.start_date.beginning_of_day === date }
+    (@events || []).filter { |event| event.start_date.beginning_of_day == date }
   end
 
   def self.find_by_id(want_id)

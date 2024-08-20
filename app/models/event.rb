@@ -41,6 +41,14 @@ class Event
     @events = data['data']['eventsByFilter'].map { |event_data| Event.new(event_data) }
   end
 
+  def self.load_from_fake(fake_event_data)
+    @events = fake_event_data.map { |event_data| Event.new(event_data) }
+  end
+
+  def self.all
+    @events
+  end
+
   def self.count
     (@events || []).count
   end

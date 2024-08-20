@@ -43,6 +43,8 @@ group :development, :test do
   gem "rspec-rails"
   gem "capybara"
   gem 'shoulda-matchers', '~> 5.0'
+  gem "faker"
+  gem "rails-controller-testing"
 
   gem "rubocop-rails-omakase", require: false
 end

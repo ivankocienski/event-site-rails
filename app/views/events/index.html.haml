@@ -1,17 +1,5 @@
+%h1 Events
 
-- if day_param.present?
-  %h1 Events on #{day_param.strftime('%Y-%m-%d')}
-  
-  = render_day_navigator day_param
-  
-  %p= link_to '<- Show all days', events_path
+%p #{@events.count} events from #{@epoch}
 
-  - @events.each do |event|
-    %p= link_to(event.name, event_path(event.id))
-
-- else
-  %h1 Events
-
-  %p #{@events.count} events from #{@epoch}
-
-  = render_event_by_day_list(@events)
+.events-listing= render_event_by_day_list(@events)

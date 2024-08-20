@@ -1,0 +1,13 @@
+%h1 Events on #{@epoch.strftime('%Y-%m-%d')}
+
+= render_day_navigator @first_day, @epoch
+
+%p= link_to '<- Show all days', events_path
+
+.events-listing
+  %div
+    = # %turbo-frame#events-on-day-list
+    - @events.each do |event|
+      %p= link_to(event.name, event_path(event.id))
+
+

@@ -1,24 +1,19 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+A WIP project that models a very basic "event listing" site.
 
-Things you may want to cover:
+## Requirements
+- ruby (>= 3)
+- git (for cloning)
+- [rbenv](https://github.com/rbenv/rbenv), [rbenv-gemset](https://github.com/jf/rbenv-gemset) and [ruby-build](https://github.com/rbenv/ruby-build) (not needed but helpful)
 
-* Ruby version
+## To run
 
-* System dependencies
+`cd` into directory, run `bundle` to install dependencies and run `rails s` then navigate to http://localhost:3000
 
-* Configuration
+Note: This does not require any database (or javascript) at this time.
 
-* Database creation
+## Data disclaimer
 
-* Database initialization
+The data from this project was pulled from the publicly available API provided by PlaceCal. No personal or private information is in this project.
 
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...

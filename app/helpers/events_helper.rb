@@ -1,5 +1,11 @@
 module EventsHelper
+  DATE_TIME_FORMAT = '%H:%M'
+  DATE_DAY_FORMAT = '%A %e %B, %Y'
   
+  def link_to_day(date)
+    link_to date.strftime(DATE_DAY_FORMAT), events_path(day: date.strftime('%Y-%m-%d'))
+  end
+
   def render_event_by_day_list(events)
     return if events.empty?
 
@@ -7,20 +13,21 @@ module EventsHelper
     last_day = events.first.start_date.beginning_of_day
     day_count = 1
 
-    html << "<h2>#{link_to last_day, events_path(day: last_day.strftime('%Y-%m-%d'))}</h2>"
+    html << "<h2>#{link_to_day(last_day)}</h2>"
 
     events.each do |event|
       if event.start_date.beginning_of_day != last_day
         day_count += 1
         break if day_count > 7
 
-        html << "<h2>#{link_to last_day, events_path(day: last_day.strftime('%Y-%m-%d'))}</h2>"
         last_day = event.start_date.beginning_of_day
+
+        html << "<h2>#{link_to_day(last_day)}</h2>"
       end
-      html << "<p>#{link_to(event.name, event_path(event.id))}</p>"
+      html << "<p><span class='time'>#{event.start_date.strftime(DATE_TIME_FORMAT)}</span> #{link_to(event.name, event_path(event.id))}</p>"
     end
 
-    html.join.html_safe
+    html.join("\n").html_safe
   end
 
   def render_day_navigator(first_day, show_day)

@@ -1,4 +1,4 @@
-%h1 Events on #{@epoch.strftime('%Y-%m-%d')}
+%h1 Events on #{@epoch.strftime(EventsHelper::DATE_DAY_FORMAT)}
 
 = render_day_navigator @first_day, @epoch
 
@@ -8,6 +8,6 @@
   %div
     = # %turbo-frame#events-on-day-list
     - @events.each do |event|
-      %p= link_to(event.name, event_path(event.id))
+      %p #{event.start_date.strftime(EventsHelper::DATE_TIME_FORMAT)} #{link_to(event.name, event_path(event.id))}
 
 

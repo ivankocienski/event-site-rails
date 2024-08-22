@@ -1,6 +1,6 @@
 module EventsHelper
-  DATE_TIME_FORMAT = '%H:%M'
-  DATE_DAY_FORMAT = '%A %e %B, %Y'
+  DATE_TIME_FORMAT = '%H:%M'.freeze
+  DATE_DAY_FORMAT = '%A %-d %B, %Y'.freeze
   
   def link_to_day(date)
     link_to date.strftime(DATE_DAY_FORMAT), events_path(day: date.strftime('%Y-%m-%d'))
@@ -34,19 +34,28 @@ module EventsHelper
     first_day_s = first_day.strftime('%Y-%m-%d')
     day = first_day.dup
     html = []
-    # html << "<span>#{day.strftime('%Y-%m-%d')}</span>"
+    month = day.month
 
-    7.times do 
-      date_s = day.strftime('%Y-%m-%d')
+    7.times do
+      format = '%A %-d' # day number
+      if month != day.month
+        format += ' %B' # month name
+        month = day.month
+      end
+
+      date_s = day.strftime(format)
 
       if day == show_day
         html << "<span>#{date_s}</span>"
       else
-        html << link_to(date_s, events_path(first: first_day_s, day: date_s))
-        # html << link_to(date_s, events_path(first: first_day_s, day: date_s), data: { 'turbo-frame': 'events-on-day-list' })
+        day_param_s = day.strftime('%Y-%m-%d')
+        html << link_to(date_s, events_path(first: first_day_s, day: day_param_s))
       end
       day += 1.day
     end
+
+    day_param_s = day.strftime('%Y-%m-%d')
+    html << link_to('Later >>', events_path(first: day_param_s, day: day_param_s))
 
     html.join(' | ').html_safe
   end

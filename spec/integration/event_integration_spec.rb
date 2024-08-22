@@ -23,7 +23,7 @@ RSpec.describe "Events", type: :feature do
         travel_to FakeEvents::NOW do
           visit "/events"
           click_link 'Wednesday 3 June, 2020'
-          expect(page).to have_selector('h1', text: 'Events on 2020-06-03')
+          expect(page).to have_selector('h1', text: 'Events on Wednesday 3 June, 2020')
           expect(page).to have_selector('.events-listing p', count: 7)
         end
       end

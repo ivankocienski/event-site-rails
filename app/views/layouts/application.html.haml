@@ -17,4 +17,12 @@
     = javascript_importmap_tags
 
   %body
+    %head
+      %nav
+        = link_to 'Home', root_path
+        = link_to 'Events', events_path
+        = link_to 'Partners', partners_path
+        = link_to 'About', '#'
+      %hr
+
     = yield

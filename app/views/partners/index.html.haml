@@ -1,5 +1,16 @@
 %h1 Partners
-%h2 Found #{@partner_count} partners
+
+= form_tag partners_path, method: 'GET' do
+  = text_field_tag :name, @partner_name_filter, placeholder: 'Filter by name'
+  = button_tag 'Apply', name: ''
+
+- if @partner_name_filter.present?
+  %h2 Filtering by '#{@partner_name_filter}'
+  %p= link_to 'Reset filter', partners_path
+  %br
+
+  - if @partners.empty?
+    %h2 No results found :(
 
 - @partners.each do |partner|
   %article.partner

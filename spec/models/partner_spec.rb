@@ -31,5 +31,20 @@ describe 'Partner' do
         expect(found).to be nil
       end
     end
+
+    context '::find_by_name_fuzzy' do
+      it 'fuzzy finds by name' do
+        found = Partner.find_by_name_fuzzy('hox')
+
+        expect(found.length).to be 1
+      end
+
+      it 'returns empty iterator on empty inputs' do
+        found = Partner.find_by_name_fuzzy("")
+
+        expect(found.length).to be 0
+      end
+
+    end
   end
 end

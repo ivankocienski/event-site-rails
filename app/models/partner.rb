@@ -59,6 +59,20 @@ class Partner
     (@partners || []).sort { |a, b| a.name <=> b.name }
   end
 
+  def self.find_by_name_fuzzy(name_string)
+    name_string = name_string.to_s.gsub(/\s+/, '') # remove whitespace
+    return [] if name_string.blank?
+
+    name_pattern = name_string
+      .chars
+      .map { |ch| Regexp.escape(ch) }
+      .join('.*')
+
+    name_regex = Regexp.new(name_pattern, Regexp::IGNORECASE)
+
+    (@partners || []).filter { |partner| name_regex.match(partner.name) }
+  end
+
   def self.find_by_id(want_id)
     return unless want_id.present?
     want_id = want_id.to_i

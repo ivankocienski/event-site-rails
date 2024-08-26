@@ -1,6 +1,18 @@
 %h1= @partner.name
-- if @partner.url.present?
-  %p
-    %a{ href: @partner.url, target: '_blank' }= @partner.url
 
-%p= @partner.description
+- if @partner.logo_url.present?
+  %img{ src: @partner.logo_url, height: '100px' }
+
+- if @partner.address.present? || @partner.url.present?
+  %p= partner_address_info(@partner)
+
+- if @partner.contact.present?
+  %p Contact #{partner_contact_info(@partner)}
+
+- if @partner.summary.present?
+  %p= @partner.summary
+
+- if @partner.description.present?
+  %h2 Description
+  %p= @partner.description
+

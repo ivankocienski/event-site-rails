@@ -6,7 +6,6 @@ class Partner
   attr_reader :description
   attr_reader :url
   attr_reader :logo_url
-  attr_reader :organiser_id
 
   attr_reader :address
   attr_reader :contact
@@ -19,6 +18,14 @@ class Partner
       return unless from.is_a?(Hash)
       @street_address = from['streetAddress']
       @post_code = from['postalCode']
+    end
+
+    def present?
+      @street_address.present? || @post_code.present?
+    end
+
+    def to_s
+      [ @street_address, @post_code ].keep_if(&:present?).join(', ')
     end
   end
 
@@ -39,7 +46,8 @@ class Partner
     @name = data['name']
     @summary = data['summary']
     @description = data['description']
-    @logo_url = data['logo_url']
+    @logo_url = data['logo']
+    @url = data['url']
 
     @address = PartnerAddress.new(data['address'])
     @contact = PartnerContact.new(data['contact'])

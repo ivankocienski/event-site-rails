@@ -14,7 +14,7 @@ RSpec.describe "Partners", type: :request do
 
   describe "/partners/:id" do
     it "returns http success" do
-      get "/partners/123"
+      get "/partners/192"
       expect(response).to have_http_status(:success)
     end
   end

@@ -1,10 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe "Events", type: :request do
-  before :each do
-    FakeEvents.given_some_fake_events_exist
-  end
-
   describe "GET /events" do
     it "returns http success" do
       get "/events"

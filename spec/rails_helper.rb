@@ -66,3 +66,7 @@ RSpec.configure do |config|
   # for time stubbing
   config.include ActiveSupport::Testing::TimeHelpers
 end
+
+puts "Loading data"
+Partner.load_from_fixture Rails.root.join('db/fixtures/partners.json')
+Event.load_from_fixture Rails.root.join('db/fixtures/events.json')

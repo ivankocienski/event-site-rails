@@ -2,10 +2,6 @@ require 'rails_helper'
 
 describe 'Partner' do
   context 'class' do
-    before :each do
-      Partner.load_from_fixture Rails.root.join('db/fixtures/partners.json')
-    end
-
     context '::count' do
       it 'returns count of all partners' do
         expect(Partner.count).to eq 65

@@ -3,10 +3,6 @@ require 'rails_helper'
 
 describe 'Event' do
   context 'class' do
-    before :each do
-      Event.load_from_fixture Rails.root.join('db/fixtures/events.json')
-    end
-
     context '::count' do
       it 'returns count of all partners' do
         expect(Event.count).to eq 2900

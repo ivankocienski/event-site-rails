@@ -8,6 +8,6 @@
   %div
     = # %turbo-frame#events-on-day-list
     - @events.each do |event|
-      %p #{event.start_date.strftime(EventsHelper::DATE_TIME_FORMAT)} #{link_to(event.name, event_path(event.id))}
+      = link_to_event_with_time_and_partner(event)
 
 

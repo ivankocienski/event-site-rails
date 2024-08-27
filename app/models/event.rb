@@ -35,6 +35,10 @@ class Event
     @address = EventAddress.new(data['address'])
   end
 
+  def organizer
+    @organizer ||= Partner.find_by_id(@organizer_id)
+  end
+
   def self.load_from_fixture(path)
     Rails.logger.info "Loading event data from #{path}"
     data = JSON.parse(File.open(path).read)

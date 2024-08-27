@@ -6,6 +6,13 @@ module EventsHelper
     link_to date.strftime(DATE_DAY_FORMAT), events_path(day: date.strftime('%Y-%m-%d'))
   end
 
+  def link_to_event_with_time_and_partner(event)
+    time_part = event.start_date.strftime(DATE_TIME_FORMAT)
+    event_name_part = link_to(event.name, event_path(event.id))
+    partner_part = link_to("<em>#{event.organizer.name}</em>".html_safe, partner_path(event.organizer.id))
+    "<p><span class='time'>#{time_part}</span> #{event_name_part} &mdash; #{partner_part}</p>".html_safe
+  end
+
   def render_event_by_day_list(events)
     return if events.empty?
 
@@ -24,7 +31,8 @@ module EventsHelper
 
         html << "<h2>#{link_to_day(last_day)}</h2>"
       end
-      html << "<p><span class='time'>#{event.start_date.strftime(DATE_TIME_FORMAT)}</span> #{link_to(event.name, event_path(event.id))}</p>"
+
+      html << link_to_event_with_time_and_partner(event)
     end
 
     html.join("\n").html_safe

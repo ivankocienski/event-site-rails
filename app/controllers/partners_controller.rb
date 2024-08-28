@@ -13,6 +13,10 @@ class PartnersController < ApplicationController
     if @partner.blank?
       @message = "Could not find partner with that ID"
       render 'home/not_found', status: :not_found
+
+    else
+      @today = Time.now.beginning_of_day
+      @upcoming_events = @partner.events.keep_if { |event| event.start_date.beginning_of_day >= @today }
     end
   end
 end

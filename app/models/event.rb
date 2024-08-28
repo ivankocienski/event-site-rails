@@ -30,7 +30,7 @@ class Event
     @start_date = Time.zone.parse(data['startDate'])
     @end_date = Time.zone.parse(data['endDate'])
     @publisher_url = data['publisherUrl']
-    @organizer_id = data['organizer']['id']
+    @organizer_id = data['organizer']['id'].to_i
 
     @address = EventAddress.new(data['address'])
   end
@@ -39,40 +39,34 @@ class Event
     @organizer ||= Partner.find_by_id(@organizer_id)
   end
 
-  def self.load_from_fixture(path)
-    Rails.logger.info "Loading event data from #{path}"
-    data = JSON.parse(File.open(path).read)
-    @events = data['data']['eventsByFilter'].map { |event_data| Event.new(event_data) }
-  end
-
-  def self.load_from_fake(fake_event_data)
-    @events = fake_event_data.map { |event_data| Event.new(event_data) }
-  end
-
   def self.all
-    @events
+    EventStore.events
   end
 
   def self.count
-    (@events || []).count
+    EventStore.events.count
   end
 
   def self.find_in_future(date)
     date = date.beginning_of_day
 
-    (@events || []).filter { |event| event.start_date.beginning_of_day >= date }
+    EventStore.events.filter { |event| event.start_date.beginning_of_day >= date }
   end
 
   def self.find_on_day(date)
     date = date.beginning_of_day
 
-    (@events || []).filter { |event| event.start_date.beginning_of_day == date }
+    EventStore.events.filter { |event| event.start_date.beginning_of_day == date }
   end
 
   def self.find_by_id(want_id)
     return unless want_id.present?
     want_id = want_id.to_i
-    (@events || []).find { |event| event.id == want_id }
+    EventStore.events.find { |event| event.id == want_id }
+  end
+
+  def self.find_by_organizer_id(organizer_id)
+    EventStore.events.filter { |event| event.organizer_id == organizer_id }
   end
 end
 

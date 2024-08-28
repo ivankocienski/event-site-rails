@@ -38,6 +38,10 @@ class Partner
       @email = from['email']
       @telephone = from['telephone']
     end
+
+    def present?
+      @email.present? || @telephone.present?
+    end
   end
 
   def initialize(data)
@@ -53,18 +57,16 @@ class Partner
     @contact = PartnerContact.new(data['contact'])
   end
 
-  def self.load_from_fixture(path)
-    Rails.logger.info "Loading partner data from #{path}"
-    data = JSON.parse(File.open(path).read)
-    @partners = data['data']['partnersByTag'].map { |partner_data| Partner.new(partner_data) }
+  def events
+    @events ||= Event.find_by_organizer_id(@id)
   end
 
   def self.count
-    (@partners || []).count
+    PartnerStore.partners.count
   end
 
   def self.find_all_by_name
-    (@partners || []).sort { |a, b| a.name <=> b.name }
+    PartnerStore.partners.sort { |a, b| a.name <=> b.name }
   end
 
   def self.find_by_name_fuzzy(name_string)
@@ -78,13 +80,13 @@ class Partner
 
     name_regex = Regexp.new(name_pattern, Regexp::IGNORECASE)
 
-    (@partners || []).filter { |partner| name_regex.match(partner.name) }
+    PartnerStore.partners.filter { |partner| name_regex.match(partner.name) }
   end
 
   def self.find_by_id(want_id)
     return unless want_id.present?
     want_id = want_id.to_i
-    (@partners || []).find { |partner| partner.id == want_id }
+    PartnerStore.partners.find { |partner| partner.id == want_id }
   end
 end
 

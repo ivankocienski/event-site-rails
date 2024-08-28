@@ -68,5 +68,5 @@ RSpec.configure do |config|
 end
 
 puts "Loading data"
-Partner.load_from_fixture Rails.root.join('db/fixtures/partners.json')
-Event.load_from_fixture Rails.root.join('db/fixtures/events.json')
+PartnerStore.load_from_fixture Rails.root.join('db/fixtures/partners.json')
+EventStore.load_from_fixture Rails.root.join('db/fixtures/events.json')

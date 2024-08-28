@@ -1,4 +1,7 @@
 
+require Rails.root.join('db/stores/partner_store')
+require Rails.root.join('db/stores/event_store')
+
 # load the fixture data into the fake models on startup
 
 Rails.application.config.after_initialize do
@@ -6,6 +9,6 @@ Rails.application.config.after_initialize do
 
   puts "Loading data"
 
-  Partner.load_from_fixture Rails.root.join('db/fixtures/partners.json')
-  Event.load_from_fixture Rails.root.join('db/fixtures/events.json')
+  PartnerStore.load_from_fixture Rails.root.join('db/fixtures/partners.json')
+  EventStore.load_from_fixture Rails.root.join('db/fixtures/events.json')
 end

@@ -1,4 +1,20 @@
 %h1= @event.name
-%h2 On #{@event.start_date}
+
+-# FIXME: multi-day events
+%h2
+  - if @event.end_date.present?
+    From <em>#{@event.start_date.strftime(EventsHelper::DATE_TIME_FORMAT)}</em>
+    to <em>#{@event.end_date.strftime(EventsHelper::DATE_TIME_FORMAT)}</em>
+  - else
+    At <em>#{@event.start_date.strftime(EventsHelper::DATE_TIME_FORMAT)}</em>
+  on #{@event.start_date.strftime(EventsHelper::DATE_DAY_FORMAT)}
+
+%p
+  By #{link_to @event.organizer.name, partner_path(@event.organizer.id)}
+  - if @event.address.present?
+    &mdash; (#{@event.address.to_s})
 
 %p= @event.description
+
+- if @event.publisher_url.present?
+  %p= link_to 'More info...', @event.publisher_url

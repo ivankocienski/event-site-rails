@@ -19,6 +19,14 @@ class Event
       @street_address = from['streetAddress']
       @post_code = from['postalCode']
     end
+
+    def present?
+      @street_address.present? || @post_code.present?
+    end
+
+    def to_s
+      [ @street_address, @post_code ].filter(&:present?).join(', ')
+    end
   end
 
   def initialize(data)

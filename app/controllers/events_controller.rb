@@ -21,7 +21,13 @@ class EventsController < ApplicationController
     if @event.blank?
       @message = "Could not find event with that ID"
       render 'home/not_found', status: :not_found
+      return
     end
+
+    @upcoming_partner_events = @event
+      .organizer
+      .events
+      .filter { |event| event.id != @event.id && event.start_date >= @event.start_date }
   end
 
   private

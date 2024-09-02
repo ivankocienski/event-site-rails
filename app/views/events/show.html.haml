@@ -18,3 +18,14 @@
 
 - if @event.publisher_url.present?
   %p= link_to 'More info...', @event.publisher_url
+
+- if @upcoming_partner_events.present?
+  %br
+  %br
+  %hr
+
+  %h2 Other events from #{@event.organizer.name}
+
+  .partner-event-list
+    %h3= @upcoming_partner_events.first.start_date.strftime(EventsHelper::DATE_DAY_FORMAT)
+    = render_partner_event_by_day_list(@upcoming_partner_events)

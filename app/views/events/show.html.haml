@@ -17,7 +17,7 @@
 %p= @event.description
 
 - if @event.publisher_url.present?
-  %p= link_to 'More info...', @event.publisher_url
+  %p= external_link_to @event.publisher_url, text: 'More info'
 
 - if @upcoming_partner_events.present?
   %br

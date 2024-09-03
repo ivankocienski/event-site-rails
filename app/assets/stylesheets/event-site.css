@@ -1,0 +1,13 @@
+.external-link:before {
+  content: " ";
+  display: inline-block;
+  width: 0.8em;
+  height: 0.8em;
+  margin-right: 0.25em;
+  /* background:  transparent  no-repeat contain center; */
+  background-image: url("external-link-icon.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+

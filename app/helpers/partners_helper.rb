@@ -11,7 +11,7 @@ module PartnersHelper
 
   def partner_address_info(partner)
     parts = []
-    parts << link_to(partner.url, partner.url, target: '_blank' ) if partner.url.present?
+    parts << external_link_to(partner.url) if partner.url.present?
     parts << partner.address.to_s if partner.address.present?
 
     parts.join(' | ').html_safe

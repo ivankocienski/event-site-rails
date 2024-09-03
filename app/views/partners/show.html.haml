@@ -16,8 +16,6 @@
   %h2 Description
   %p= @partner.description
 
-%pre (Found #{@partner.events.count} events for this partner)
-
 - if @upcoming_events.present?
   %h2 Events from #{@today.strftime(EventsHelper::DATE_DAY_FORMAT)}
   .partner-event-list= render_partner_event_by_day_list(@partner.events)

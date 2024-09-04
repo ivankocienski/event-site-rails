@@ -31,10 +31,10 @@ module PartnersHelper
         break if day_count > 7
         last_day = day_of_event
 
-        html << "<h3>#{last_day.strftime(EventsHelper::DATE_DAY_FORMAT)}</h3>"
+        html << "<h3>#{fancy_date_format(last_day)}</h3>"
       end
 
-      time_part = event.start_date.strftime(EventsHelper::DATE_TIME_FORMAT)
+      time_part = fancy_time_format(event.start_date) #.strftime(EventsHelper::DATE_TIME_FORMAT)
       event_name_part = link_to(event.name, event_path(event.id))
 
       html << "<p><span class='time'>#{time_part}</span> #{event_name_part}</p>"

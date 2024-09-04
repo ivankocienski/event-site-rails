@@ -7,14 +7,14 @@
     to <em>#{@event.end_date.strftime(EventsHelper::DATE_TIME_FORMAT)}</em>
   - else
     At <em>#{@event.start_date.strftime(EventsHelper::DATE_TIME_FORMAT)}</em>
-  on #{@event.start_date.strftime(EventsHelper::DATE_DAY_FORMAT)}
+  on #{fancy_date_format(@event.start_date)}
 
 %p
   By #{link_to @event.organizer.name, partner_path(@event.organizer.id)}
   - if @event.address.present?
     &mdash; (#{@event.address.to_s})
 
-%p= @event.description
+= format_for_content(@event.description)
 
 - if @event.publisher_url.present?
   %p= external_link_to @event.publisher_url, text: 'More info'
@@ -27,5 +27,5 @@
   %h2 Other events from #{@event.organizer.name}
 
   .partner-event-list
-    %h3= @upcoming_partner_events.first.start_date.strftime(EventsHelper::DATE_DAY_FORMAT)
+    %h3= fancy_date_format(@upcoming_partner_events.first.start_date)
     = render_partner_event_by_day_list(@upcoming_partner_events)

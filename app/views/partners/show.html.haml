@@ -17,5 +17,5 @@
   = format_for_content(@partner.description)
 
 - if @upcoming_events.present?
-  %h2 Events from #{@today.strftime(EventsHelper::DATE_DAY_FORMAT)}
+  %h2 Events from #{fancy_date_format(@today)}
   .partner-event-list= render_partner_event_by_day_list(@partner.events)

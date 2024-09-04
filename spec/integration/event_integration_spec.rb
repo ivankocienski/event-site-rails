@@ -19,8 +19,8 @@ RSpec.describe "Events", type: :feature do
       it 'can show events on only one day' do
         travel_to FakeTime::TODAY do
           visit "/events"
-          click_link 'Monday 3 June, 2024'
-          expect(page).to have_selector('h1', text: 'Events on Monday 3 June, 2024')
+          click_link 'Monday 3rd June, 2024'
+          expect(page).to have_selector('h1', text: 'Events on Monday 3rd June, 2024')
           expect(page).to have_selector('.events-listing p', count: 1)
         end
       end

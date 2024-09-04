@@ -3,11 +3,21 @@ module EventsHelper
   DATE_DAY_FORMAT = '%A %-d %B, %Y'.freeze
   
   def link_to_day(date)
-    link_to date.strftime(DATE_DAY_FORMAT), events_path(day: date.strftime('%Y-%m-%d'))
+    link_to fancy_date_format(date), events_path(day: date.strftime('%Y-%m-%d'))
+  end
+
+  def fancy_time_format(time)
+    time.strftime(time.min == 0 ? '%l%P' : '%l.%M%P')
+  end
+
+  def fancy_date_format(time)
+    day_s = time.day.ordinalize
+
+    time.strftime "%A #{day_s} %B, %Y"
   end
 
   def link_to_event_with_time_and_partner(event)
-    time_part = event.start_date.strftime(DATE_TIME_FORMAT)
+    time_part = fancy_time_format(event.start_date) # .strftime(a=DATE_TIME_FORMAT)
     event_name_part = link_to(event.name, event_path(event.id))
     partner_part = link_to("<em>#{event.organizer.name}</em>".html_safe, partner_path(event.organizer.id))
     "<p><span class='time'>#{time_part}</span> #{event_name_part} &mdash; #{partner_part}</p>".html_safe
@@ -45,7 +55,8 @@ module EventsHelper
     month = day.month
 
     7.times do
-      format = '%A %-d' # day number
+      day_s = day.day.ordinalize
+      format = "%A #{day_s}" # day number
       if month != day.month
         format += ' %B' # month name
         month = day.month

@@ -16,7 +16,30 @@ class PartnersController < ApplicationController
 
     else
       @today = Time.now.beginning_of_day
-      @upcoming_events = @partner.events.keep_if { |event| event.start_date.beginning_of_day >= @today }
+      # @upcoming_events = @partner.events.keep_if { |event| event.start_date.beginning_of_day >= @today }
+
+      @upcoming_events, @previous_events = @partner
+        .events
+        .reduce([ [], [] ]) do |store, event|
+          if event.start_date.beginning_of_day >= @today
+            store[0] << event
+          else
+            store[1] << event
+          end
+          store
+        end
+    end
+  end
+
+  def previous_events
+    @partner = Partner.find_by_id(params[:id])
+    if @partner.blank?
+      @message = "Could not find partner with that ID"
+      render 'home/not_found', status: :not_found
+
+    else
+      @today = Time.now.beginning_of_day
+      @previous_events = @partner.events.keep_if { |event| event.start_date.beginning_of_day < @today }
     end
   end
 end

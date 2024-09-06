@@ -15,4 +15,10 @@ RSpec.describe "Partners", type: :request do
     end
   end
 
+  describe "/partners/:id/previous_events" do
+    it "returns http success" do
+      get "/partners/192"
+      expect(response).to have_http_status(:success)
+    end
+  end
 end

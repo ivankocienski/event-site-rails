@@ -1,0 +1,10 @@
+- content_for(:title) { "Previous events by #{@partner.name} - Partner" }
+
+%h1 Previous events by #{link_to(@partner.name, partner_path(@partner.id))}
+
+-# %p= link_to 'Show upcoming events', partner_path(@partner.id)
+
+- if @previous_events.present?
+  %h2 Events before #{fancy_date_format(@today)}
+  .partner-event-list= render_partner_event_by_day_list(@previous_events)
+

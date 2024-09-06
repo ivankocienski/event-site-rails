@@ -1,5 +1,10 @@
 Rails.application.routes.draw do
-  resources :partners, only: %i[ index show ]
+  resources :partners, only: %i[ index show ] do
+    member do
+      get :previous_events
+    end
+  end
+
   resources :events, only: %i[ index show ]
 
   get '/about' => 'home#about', as: :about

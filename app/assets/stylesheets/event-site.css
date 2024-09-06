@@ -33,3 +33,7 @@ nav em {
   letter-spacing: 0.05em;
 }
 
+nav .active {
+  font-weight: bold;
+}
+

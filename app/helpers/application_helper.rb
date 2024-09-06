@@ -16,4 +16,9 @@ module ApplicationHelper
     content = simple_format(text)
     "<div class='content'>#{content}</div>".html_safe
   end
+
+  def nav_link_to(page, path, route = {})
+    active = route.all? { |key, value| params[key] == value }
+    link_to(page, path, class: ('active' if active)).html_safe
+  end
 end

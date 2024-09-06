@@ -21,9 +21,9 @@
       %nav
         %em= link_to 'EventSite', root_path
         &bull;
-        = link_to 'Events', events_path
-        = link_to 'Partners', partners_path
-        = link_to 'About', about_path
+        = nav_link_to 'Events', events_path, controller: 'events'
+        = nav_link_to 'Partners', partners_path, controller: 'partners'
+        = nav_link_to 'About', about_path, controller: 'home', action: 'about'
       %hr
 
     = yield

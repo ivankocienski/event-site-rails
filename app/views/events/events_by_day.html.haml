@@ -1,3 +1,5 @@
+- content_for(:title) { "Events on #{fancy_date_format(@epoch)}" }
+
 %h1 Events on #{fancy_date_format(@epoch)}
 
 = render_day_navigator @first_day, @epoch

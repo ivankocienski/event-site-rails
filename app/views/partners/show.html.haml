@@ -1,3 +1,5 @@
+- content_for(:title) { "#{@partner.name} - Partner" }
+
 %h1= @partner.name
 
 - if @partner.logo_url.present?

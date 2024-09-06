@@ -1,4 +1,10 @@
 module ApplicationHelper
+  def page_title_text
+    title = content_for(:title)
+    return "Event Site Rails" if title.blank?
+    "#{title} - Event Site Rails"
+  end
+
   def external_link_to(url, text: nil, target: '_blank')
     text ||= url.sub(/^https?:\/\/(www.)?/, '').sub(/\/$/, '')
 

@@ -1,5 +1,7 @@
 class Partner < ApplicationRecord
 
+  has_many :events
+
   # TODO
   # PartnerAddress
   # PartnerContact
@@ -52,10 +54,6 @@ class Partner < ApplicationRecord
     def present?
       email.present? || telephone.present?
     end
-  end
-
-  def events
-    []
   end
 
   def address

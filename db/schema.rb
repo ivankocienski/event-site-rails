@@ -10,7 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_09_07_114811) do
+ActiveRecord::Schema[7.2].define(version: 2024_09_09_104013) do
+  create_table "events", force: :cascade do |t|
+    t.integer "placecal_id", null: false
+    t.string "name"
+    t.string "summary"
+    t.string "description"
+    t.datetime "starts_at"
+    t.datetime "ends_at"
+    t.string "publisher_url"
+    t.integer "organizer_placecal_id"
+    t.string "address_street"
+    t.string "address_postcode"
+    t.integer "partner_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "partners", force: :cascade do |t|
     t.integer "placecal_id", null: false
     t.string "name"

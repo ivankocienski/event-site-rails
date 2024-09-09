@@ -21,11 +21,11 @@ module PartnersHelper
     return if events.empty?
 
     html = []
-    last_day = events.first.start_date.beginning_of_day
+    last_day = events.first.starts_at.beginning_of_day
     day_count = 1
 
     events.each do |event|
-      day_of_event = event.start_date.beginning_of_day
+      day_of_event = event.starts_at.beginning_of_day
       if day_of_event != last_day
         day_count += 1
         break if day_count > 7
@@ -34,8 +34,8 @@ module PartnersHelper
         html << "<h3>#{fancy_date_format(last_day)}</h3>"
       end
 
-      time_part = fancy_time_format(event.start_date) #.strftime(EventsHelper::DATE_TIME_FORMAT)
-      event_name_part = link_to(event.name, event_path(event.id))
+      time_part = fancy_time_format(event.starts_at) #.strftime(EventsHelper::DATE_TIME_FORMAT)
+      event_name_part = link_to(event.name, event_path(event))
 
       html << "<p><span class='time'>#{time_part}</span> #{event_name_part}</p>"
     end

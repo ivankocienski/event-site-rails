@@ -27,7 +27,7 @@ class EventsController < ApplicationController
     @upcoming_partner_events = @event
       .organizer
       .events
-      .filter { |event| event.id != @event.id && event.start_date >= @event.start_date }
+      .filter { |event| event.id != @event.id && event.starts_at >= @event.starts_at }
   end
 
   private

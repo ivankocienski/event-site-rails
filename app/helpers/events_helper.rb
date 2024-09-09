@@ -17,9 +17,9 @@ module EventsHelper
   end
 
   def link_to_event_with_time_and_partner(event)
-    time_part = fancy_time_format(event.start_date) # .strftime(a=DATE_TIME_FORMAT)
-    event_name_part = link_to(event.name, event_path(event.id))
-    partner_part = link_to("<em>#{event.organizer.name}</em>".html_safe, partner_path(event.organizer.id))
+    time_part = fancy_time_format(event.starts_at) # .strftime(a=DATE_TIME_FORMAT)
+    event_name_part = link_to(event.name, event_path(event))
+    partner_part = link_to("<em>#{event.organizer.name}</em>".html_safe, partner_path(event.organizer))
     "<p><span class='time'>#{time_part}</span> #{event_name_part} &mdash; #{partner_part}</p>".html_safe
   end
 
@@ -27,17 +27,17 @@ module EventsHelper
     return if events.empty?
 
     html = []
-    last_day = events.first.start_date.beginning_of_day
+    last_day = events.first.starts_at.beginning_of_day
     day_count = 1
 
     html << "<h2>#{link_to_day(last_day)}</h2>"
 
     events.each do |event|
-      if event.start_date.beginning_of_day != last_day
+      if event.starts_at.beginning_of_day != last_day
         day_count += 1
         break if day_count > 7
 
-        last_day = event.start_date.beginning_of_day
+        last_day = event.starts_at.beginning_of_day
 
         html << "<h2>#{link_to_day(last_day)}</h2>"
       end

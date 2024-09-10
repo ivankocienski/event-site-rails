@@ -34,7 +34,7 @@ module PartnersHelper
         html << "<h3>#{fancy_date_format(last_day)}</h3>"
       end
 
-      time_part = fancy_time_format(event.starts_at) #.strftime(EventsHelper::DATE_TIME_FORMAT)
+      time_part = fancy_time_format(event.starts_at)
       event_name_part = link_to(event.name, event_path(event))
 
       html << "<p><span class='time'>#{time_part}</span> #{event_name_part}</p>"

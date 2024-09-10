@@ -13,23 +13,14 @@ class PartnersController < ApplicationController
 
   def show
     @today = Time.now.beginning_of_day
-    # @upcoming_events = @partner.events.keep_if { |event| event.start_date.beginning_of_day >= @today }
 
-    @upcoming_events, @previous_events = @partner
-      .events
-      .reduce([ [], [] ]) do |store, event|
-        if event.starts_at.beginning_of_day >= @today
-          store[0] << event
-        else
-          store[1] << event
-        end
-        store
-      end
+    @upcoming_events = @partner.events.from_day_onward(@today)
+    @previous_events = @partner.events.before_date(@today)
   end
 
   def previous_events
     @today = Time.now.beginning_of_day
-    @previous_events = @partner.events.to_a.keep_if { |event| event.starts_at.beginning_of_day < @today }
+    @previous_events = @partner.events.before_date(@today)
   end
 
   private

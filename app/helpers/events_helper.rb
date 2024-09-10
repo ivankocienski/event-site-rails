@@ -17,7 +17,7 @@ module EventsHelper
   end
 
   def link_to_event_with_time_and_partner(event)
-    time_part = fancy_time_format(event.starts_at) # .strftime(a=DATE_TIME_FORMAT)
+    time_part = fancy_time_format(event.starts_at)
     event_name_part = link_to(event.name, event_path(event))
     partner_part = link_to("<em>#{event.organizer.name}</em>".html_safe, partner_path(event.organizer))
     "<p><span class='time'>#{time_part}</span> #{event_name_part} &mdash; #{partner_part}</p>".html_safe

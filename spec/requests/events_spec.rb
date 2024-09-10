@@ -1,6 +1,14 @@
 require 'rails_helper'
 
 RSpec.describe "Events", type: :request do
+  let(:partner) { Partner.create! name: 'Alpha', placecal_id: 100 }
+
+  before :each do
+    10.times do |n|
+      Event.create! name: 'Beta', placecal_id: 200 + n, starts_at: Time.new(2000, 6, 1 + n), partner: partner 
+    end
+  end
+
   describe "GET /events" do
     it "returns http success" do
       get "/events"

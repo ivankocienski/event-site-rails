@@ -8,26 +8,28 @@ class EventsController < ApplicationController
     @day_mode = day_param.present?
 
     if @day_mode
-      @events = Event.find_on_day(@epoch)
+      @events = Event.on_day(@epoch)
       render :events_by_day
 
     else
-      @events = Event.find_in_future(@epoch)
+      @events = Event.from_day_onward(@epoch)
     end
   end
 
   def show
-    @event = Event.find_by_id(params[:id])
+    @event = Event.where( id: (params[:id]) ).first
     if @event.blank?
       @message = "Could not find event with that ID"
       render 'home/not_found', status: :not_found
       return
     end
 
+    today = Time.now
     @upcoming_partner_events = @event
       .organizer
       .events
-      .filter { |event| event.id != @event.id && event.starts_at >= @event.starts_at }
+      .from_day_onward(today)
+      .where( "id != ?", @event.id )
   end
 
   private

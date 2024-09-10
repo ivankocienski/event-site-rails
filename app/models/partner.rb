@@ -2,16 +2,7 @@ class Partner < ApplicationRecord
 
   has_many :events
 
-  # TODO
-  # PartnerAddress
-  # PartnerContact
-  # has_many :events
-  # ::count
-  # ::find_all_by_name
-  # ::find_by_name_fuzzy
-  # ::find_by_id
-
-  def self.find_by_name_fuzzy(name_string)
+  scope :find_by_name_fuzzy, lambda { |name_string|
     name_string = name_string.to_s.gsub(/\s+/, '') # remove whitespace
     return none if name_string.blank?
 
@@ -20,8 +11,8 @@ class Partner < ApplicationRecord
       .map { |ch| sanitize_sql(ch) }
       .join('%')
 
-    where('name LIKE ?', "%#{name_pattern}%") # regex)
-  end
+    where('name LIKE ?', "%#{name_pattern}%")
+  }
 
   class PartnerAddress
     attr_reader :street_address

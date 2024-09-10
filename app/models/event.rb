@@ -24,6 +24,18 @@ class Event < ApplicationRecord
     @address ||= EventAddress.new(self)
   end
 
+  scope :from_day_onward, lambda { |epoch| 
+    where "date(starts_at) >= date(?)", epoch
+  }
+
+  scope :on_day, lambda { |day| 
+    where "date(starts_at) = date(?)", day
+  }
+
+  scope :before_date, lambda { |day|
+    where "date(starts_at) < date(?)", day
+  }
+  
   # ::find_in_future
   # ::find_on_day
   # ::find_by_id
@@ -44,6 +56,7 @@ class Event < ApplicationRecord
     where(id: want_id).first
   end
 
+  # needed ??? - should just use AR event.partner here?
   def self.find_by_organizer_id(organizer_id)
   end
 end

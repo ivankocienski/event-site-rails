@@ -11,17 +11,16 @@ class Partner < ApplicationRecord
   # ::find_by_name_fuzzy
   # ::find_by_id
 
-  # these behave the same way the non-AR methods do
-  def self.find_all_by_name
-    order(:name).all
-  end
+  def self.find_by_name_fuzzy(name_string)
+    name_string = name_string.to_s.gsub(/\s+/, '') # remove whitespace
+    return none if name_string.blank?
 
-  def self.find_by_name_fuzzy(name)
-    all
-  end
+    name_pattern = name_string
+      .chars
+      .map { |ch| sanitize_sql(ch) }
+      .join('%')
 
-  def self.find_by_id(id)
-    where(id: id).first
+    where('name LIKE ?', "%#{name_pattern}%") # regex)
   end
 
   class PartnerAddress

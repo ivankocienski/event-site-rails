@@ -42,4 +42,13 @@ module PartnersHelper
 
     html.join("\n").html_safe
   end
+
+  def keywords_for_partner(partner)
+    partner
+      .keywords
+      .order(:name)
+      .map { |kw| "<span class='keyword'>#{kw.name}</span>" }
+      .join(' ')
+      .html_safe
+  end
 end

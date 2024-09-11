@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_09_09_104013) do
+ActiveRecord::Schema[7.2].define(version: 2024_09_11_091652) do
   create_table "events", force: :cascade do |t|
     t.integer "placecal_id", null: false
     t.string "name"
@@ -25,6 +25,23 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_09_104013) do
     t.integer "partner_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "keywords", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "partner_keywords", force: :cascade do |t|
+    t.integer "partner_id", null: false
+    t.integer "keyword_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["keyword_id"], name: "index_partner_keywords_on_keyword_id"
+    t.index ["partner_id", "keyword_id"], name: "index_partner_keywords_partner_id_keyword_id", unique: true
+    t.index ["partner_id"], name: "index_partner_keywords_on_partner_id"
   end
 
   create_table "partners", force: :cascade do |t|

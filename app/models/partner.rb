@@ -2,6 +2,9 @@ class Partner < ApplicationRecord
 
   has_many :events
 
+  has_many :partner_keywords
+  has_many :keywords, through: :partner_keywords
+
   scope :find_by_name_fuzzy, lambda { |name_string|
     name_string = name_string.to_s.gsub(/\s+/, '') # remove whitespace
     return none if name_string.blank?

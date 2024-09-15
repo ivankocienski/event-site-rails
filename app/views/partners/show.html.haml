@@ -11,6 +11,9 @@
 - if @partner.contact.present?
   %p Contact #{partner_contact_info(@partner)}
 
+- if @partner.partner_keywords.any?
+  %p Keywords #{keywords_for_partner @partner}
+
 - if @partner.summary.present?
   %p= @partner.summary
 

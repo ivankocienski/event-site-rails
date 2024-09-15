@@ -17,6 +17,17 @@ module PartnersHelper
     parts.join(' | ').html_safe
   end
 
+  def partner_index_filter_title_text(name_filter, keyword_filter)
+    return if name_filter.blank? && keyword_filter.blank?
+
+    text = [
+      ("by title with '<em>#{@partner_name_filter}</em>'" if @partner_name_filter.present?),
+      ("on keyword '<em>#{keyword_filter.name}</em>'" if @keyword_for_filter.present?)
+    ].keep_if(&:present?).join(' and ')
+
+    "Filtering #{text}".html_safe
+  end
+
   def render_partner_event_by_day_list(events)
     return if events.empty?
 
@@ -47,8 +58,8 @@ module PartnersHelper
     partner
       .keywords
       .order(:name)
-      .map { |kw| "<span class='keyword'>#{kw.name}</span>" }
-      .join(' ')
+      .map { |kw| link_to kw.name, partners_path(keyword: kw.name), class: 'keyword' }
+      .join(' &bull; ')
       .html_safe
   end
 end

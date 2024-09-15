@@ -4,11 +4,19 @@ class PartnersController < ApplicationController
 
   def index
     @partner_name_filter = params[:name].to_s.strip
-    if @partner_name_filter.present?
-      @partners = Partner.find_by_name_fuzzy(@partner_name_filter)
-    else
-      @partners = Partner.order(:name)
-    end
+
+    partner_keyword_param = params[:keyword].to_s.strip
+    @keyword_for_filter = Keyword.where(name: partner_keyword_param).first if partner_keyword_param.present?
+
+    @partners = Partner.all
+
+    # name
+    @partners = @partners.with_fuzzy_name(@partner_name_filter) if @partner_name_filter.present?
+
+    # keyword
+    @partners = @partners.with_keyword(@keyword_for_filter) if @keyword_for_filter.present?
+
+    @partners = @partners.order(:name)
   end
 
   def show

@@ -5,7 +5,7 @@ class Partner < ApplicationRecord
   has_many :partner_keywords, dependent: :destroy
   has_many :keywords, through: :partner_keywords
 
-  scope :find_by_name_fuzzy, lambda { |name_string|
+  scope :with_fuzzy_name, lambda { |name_string|
     name_string = name_string.to_s.gsub(/\s+/, '') # remove whitespace
     return none if name_string.blank?
 
@@ -15,6 +15,13 @@ class Partner < ApplicationRecord
       .join('%')
 
     where('name LIKE ?', "%#{name_pattern}%")
+  }
+
+  scope :with_keyword, lambda { |keyword|
+    return all if keyword.blank?
+
+    joins(:partner_keywords)
+      .where(partner_keywords: { keyword_id: keyword.id })
   }
 
   class PartnerAddress

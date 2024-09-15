@@ -2,7 +2,7 @@ class Partner < ApplicationRecord
 
   has_many :events
 
-  has_many :partner_keywords
+  has_many :partner_keywords, dependent: :destroy
   has_many :keywords, through: :partner_keywords
 
   scope :find_by_name_fuzzy, lambda { |name_string|

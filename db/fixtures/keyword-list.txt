@@ -1,0 +1,89 @@
+# This is a simple list of keywords, one per line
+
+health
+trans health
+fitness
+self defence
+art
+crafting
+research
+academia
+education
+bame
+cafe
+gallery
+community space
+support organisation
+drag
+entertainment
+experience
+karaoke
+lesbian
+sport
+rugby
+lgbtq+
+safe space
+community
+music
+live music
+independent
+charity
+clothing
+outreach
+workshops
+exhibitions
+support
+live events
+feminist
+japan
+lgbtq+
+resource
+national
+health
+wellbeing
+charity
+information
+support
+community centre
+one to one
+counselling
+drug and alcohol service
+meetup
+non-binary
+intersex
+knitting
+crafts
+fashion
+diy
+family
+children
+teenagers
+parents
+disability
+nature
+punk
+collective
+dance
+running
+campaign
+rave
+church
+faith
+christian
+advocacy
+counselling
+mentoring
+networking
+accessible
+safe space
+housing
+protests
+grassroots
+media
+volunteer
+radio
+interviews
+football
+cycling
+incubator
+

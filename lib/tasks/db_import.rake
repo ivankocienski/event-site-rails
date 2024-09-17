@@ -48,27 +48,57 @@ module PlacecalSnapshotImporter
     path = Rails.root.join('db/fixtures/events.json')
     puts "Importing events from #{path}"
 
+    event_table = {}
+
     data = JSON.parse(File.open(path).read)
     data['data']['eventsByFilter'].each do |event_data|
-      organizer_id = event_data['organizer']['id'].to_i
 
+      organizer_id = event_data['organizer']['id'].to_i
       partner = @partners_by_placecal_id[organizer_id]
       raise "import_events: partner not found for organizer #{organizer_id}" if partner.blank?
 
-      event_data['address'] ||= {}
-      
-      partner.events.create!(
+      event_instance = {
         placecal_id: event_data['id'],
-        name: event_data['name'],
-        summary: event_data['summary'],
-        description: event_data['description'],
         starts_at: Time.zone.parse(event_data['startDate']),
-        ends_at: Time.zone.parse(event_data['endDate']),
-        organizer_placecal_id: organizer_id,
-        address_street: event_data['address']['streetAddress'],
-        address_postcode: event_data['address']['postalCode']
-      )
+        ends_at: Time.zone.parse(event_data['endDate'])
+      }
 
+      event_key = "#{organizer_id} #{event_data['name']}"
+
+      if event_table.has_key?(event_key)
+        event_table[event_key][:instances] << event_instance
+
+      else
+        event_data['address'] ||= {}
+
+        event_table[event_key] = {
+          event: {
+            # placecal_id: event_data['id'],
+            name: event_data['name'],
+            summary: event_data['summary'],
+            description: event_data['description'],
+            organizer_placecal_id: organizer_id,
+            address_street: event_data['address']['streetAddress'],
+            address_postcode: event_data['address']['postalCode'],
+            partner_id: partner.id
+          },
+          instances: [ event_instance ]
+        }
+      end
+    end
+
+    puts "Loaded #{event_table.count} unique events, processing..."
+
+    event_table.values.each do |value|
+      event_attributes = value[:event]
+      instance_list = value[:instances]
+
+      Event.transaction do
+        event = Event.create!(event_attributes)
+        instance_list.each do |instance_attributes|
+          event.event_instances.create! instance_attributes
+        end
+      end
     end
   end
 
@@ -79,7 +109,7 @@ module PlacecalSnapshotImporter
 
     import_events
 
-    puts "Have created #{Partner.count} partners and #{Event.count} events"
+    puts "Have created #{Partner.count} partners, #{Event.count} events and #{EventInstance.count} event instances"
   end
 end
 
@@ -150,3 +180,32 @@ namespace :db do
   end
 end
 
+__END__
+
+  def import_events
+    path = Rails.root.join('db/fixtures/events.json')
+    puts "Importing events from #{path}"
+
+    data = JSON.parse(File.open(path).read)
+    data['data']['eventsByFilter'].each do |event_data|
+      organizer_id = event_data['organizer']['id'].to_i
+
+      partner = @partners_by_placecal_id[organizer_id]
+      raise "import_events: partner not found for organizer #{organizer_id}" if partner.blank?
+
+      event_data['address'] ||= {}
+      
+      partner.events.create!(
+        placecal_id: event_data['id'],
+        name: event_data['name'],
+        summary: event_data['summary'],
+        description: event_data['description'],
+        starts_at: Time.zone.parse(event_data['startDate']),
+        ends_at: Time.zone.parse(event_data['endDate']),
+        organizer_placecal_id: organizer_id,
+        address_street: event_data['address']['streetAddress'],
+        address_postcode: event_data['address']['postalCode']
+      )
+
+    end
+  end

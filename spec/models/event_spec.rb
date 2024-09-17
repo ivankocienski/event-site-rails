@@ -3,24 +3,35 @@ require 'rails_helper'
 RSpec.describe Event, type: :model do
 
   context '(date scope)' do
+    def create_event(start, placecal_id, partner)
+      Event.transaction do
+
+        event = Event.create! partner: partner
+        event.event_instances.create!(
+          starts_at: start, 
+          placecal_id: placecal_id
+        )
+      end
+    end
+
     before :each do
       partner = Partner.create! name: 'Alpha', placecal_id: 200
 
       # 1st of june
-      Event.create! starts_at: Time.new(2000, 6, 1, 10, 30), placecal_id: 100, partner: partner
-      Event.create! starts_at: Time.new(2000, 6, 1, 12, 30), placecal_id: 100, partner: partner
+      create_event Time.new(2000, 6, 1, 10, 30), 100, partner
+      create_event Time.new(2000, 6, 1, 12, 30), 100, partner
 
       # 4th of june
-      Event.create! starts_at: Time.new(2000, 6, 4, 9, 0), placecal_id: 100, partner: partner
-      Event.create! starts_at: Time.new(2000, 6, 4, 12, 0), placecal_id: 100, partner: partner
-      Event.create! starts_at: Time.new(2000, 6, 4, 17, 30), placecal_id: 100, partner: partner
+      create_event Time.new(2000, 6, 4, 9, 0), 100, partner
+      create_event Time.new(2000, 6, 4, 12, 0), 100, partner
+      create_event Time.new(2000, 6, 4, 17, 30), 100, partner
 
       # 10th of june
-      Event.create! starts_at: Time.new(2000, 6, 10, 8, 0), placecal_id: 100, partner: partner
-      Event.create! starts_at: Time.new(2000, 6, 10, 10, 0), placecal_id: 100, partner: partner
+      create_event Time.new(2000, 6, 10, 8, 0), 100, partner
+      create_event Time.new(2000, 6, 10, 10, 0), 100, partner
 
       # 1st of july
-      Event.create! starts_at: Time.new(2000, 7, 1, 10, 30), placecal_id: 100, partner: partner
+      create_event Time.new(2000, 7, 1, 10, 30), 100, partner
     end
 
     # june 4th at 4.25pm

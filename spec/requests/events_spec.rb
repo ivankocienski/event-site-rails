@@ -4,8 +4,11 @@ RSpec.describe "Events", type: :request do
   let(:partner) { Partner.create! name: 'Alpha', placecal_id: 100 }
 
   before :each do
-    10.times do |n|
-      Event.create! name: 'Beta', placecal_id: 200 + n, starts_at: Time.new(2000, 6, 1 + n), partner: partner 
+    Event.transaction do
+      10.times do |n|
+        event = Event.create! name: 'Beta', partner: partner 
+        event.event_instances.create! placecal_id: 200 + n, starts_at: Time.new(2000, 6, 1 + n)
+      end
     end
   end
 

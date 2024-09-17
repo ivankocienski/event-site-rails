@@ -2,6 +2,8 @@ class Event < ApplicationRecord
   belongs_to :partner
   alias_method :organizer, :partner
 
+  has_many :event_instances, dependent: :destroy
+
   class EventAddress
     attr_reader :street_address
     attr_reader :post_code
@@ -25,14 +27,17 @@ class Event < ApplicationRecord
   end
 
   scope :from_day_onward, lambda { |epoch| 
-    where "date(starts_at) >= date(?)", epoch
+    joins(:event_instances)
+      .where("date(event_instances.starts_at) >= date(?)", epoch)
   }
 
   scope :on_day, lambda { |day| 
-    where "date(starts_at) = date(?)", day
+    joins(:event_instances)
+      .where("date(event_instances.starts_at) = date(?)", day)
   }
 
   scope :before_date, lambda { |day|
-    where "date(starts_at) < date(?)", day
+    joins(:event_instances)
+      .where("date(event_instances.starts_at) < date(?)", day)
   }
 end

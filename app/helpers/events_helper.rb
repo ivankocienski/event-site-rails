@@ -16,33 +16,34 @@ module EventsHelper
     time.strftime "%A #{day_s} %B, %Y"
   end
 
-  def link_to_event_with_time_and_partner(event)
-    time_part = fancy_time_format(event.starts_at)
-    event_name_part = link_to(event.name, event_path(event))
+  def link_to_event_instance_with_time_and_partner(event_instance)
+    event = event_instance.event
+    time_part = fancy_time_format(event_instance.starts_at)
+    event_name_part = link_to(event.name, event_path(event_instance.id))
     partner_part = link_to("<em>#{event.organizer.name}</em>".html_safe, partner_path(event.organizer))
     "<p><span class='time'>#{time_part}</span> #{event_name_part} &mdash; #{partner_part}</p>".html_safe
   end
 
-  def render_event_by_day_list(events)
-    return if events.empty?
+  def render_event_by_day_list(event_instances)
+    return if event_instances.empty?
 
     html = []
-    last_day = events.first.starts_at.beginning_of_day
+    last_day = event_instances.first.starts_at.beginning_of_day
     day_count = 1
 
     html << "<h2>#{link_to_day(last_day)}</h2>"
 
-    events.each do |event|
-      if event.starts_at.beginning_of_day != last_day
+    event_instances.each do |event_instance|
+      if event_instance.starts_at.beginning_of_day != last_day
         day_count += 1
         break if day_count > 7
 
-        last_day = event.starts_at.beginning_of_day
+        last_day = event_instance.starts_at.beginning_of_day
 
         html << "<h2>#{link_to_day(last_day)}</h2>"
       end
 
-      html << link_to_event_with_time_and_partner(event)
+      html << link_to_event_instance_with_time_and_partner(event_instance)
     end
 
     html.join("\n").html_safe

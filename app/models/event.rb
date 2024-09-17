@@ -26,6 +26,8 @@ class Event < ApplicationRecord
     @address ||= EventAddress.new(self)
   end
 
+  # needed ??
+
   scope :from_day_onward, lambda { |epoch| 
     joins(:event_instances)
       .where("date(event_instances.starts_at) >= date(?)", epoch)

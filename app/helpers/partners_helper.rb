@@ -28,15 +28,15 @@ module PartnersHelper
     "Filtering #{text}".html_safe
   end
 
-  def render_partner_event_by_day_list(events)
-    return if events.empty?
+  def render_partner_event_by_day_list(event_instances)
+    return if event_instances.empty?
 
     html = []
-    last_day = events.first.starts_at.beginning_of_day
+    last_day = event_instances.first.starts_at.beginning_of_day
     day_count = 1
 
-    events.each do |event|
-      day_of_event = event.starts_at.beginning_of_day
+    event_instances.each do |event_instance|
+      day_of_event = event_instance.starts_at.beginning_of_day
       if day_of_event != last_day
         day_count += 1
         break if day_count > 7
@@ -45,8 +45,8 @@ module PartnersHelper
         html << "<h3>#{fancy_date_format(last_day)}</h3>"
       end
 
-      time_part = fancy_time_format(event.starts_at)
-      event_name_part = link_to(event.name, event_path(event))
+      time_part = fancy_time_format(event_instance.starts_at)
+      event_name_part = link_to(event_instance.event.name, event_path(event_instance))
 
       html << "<p><span class='time'>#{time_part}</span> #{event_name_part}</p>"
     end

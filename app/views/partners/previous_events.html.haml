@@ -4,7 +4,7 @@
 
 -# %p= link_to 'Show upcoming events', partner_path(@partner.id)
 
-- if @previous_events.present?
+- if @previous_event_instances.present?
   %h2 Events before #{fancy_date_format(@today)}
-  .partner-event-list= render_partner_event_by_day_list(@previous_events)
+  .partner-event-list= render_partner_event_by_day_list(@previous_event_instances)
 

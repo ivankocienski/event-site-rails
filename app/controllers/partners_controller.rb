@@ -22,13 +22,22 @@ class PartnersController < ApplicationController
   def show
     @today = Time.now.beginning_of_day
 
-    @upcoming_events = @partner.events.from_day_onward(@today)
-    @previous_events = @partner.events.before_date(@today)
+    @upcoming_events = EventInstance
+      .for_partner(@partner)
+      .from_day_onward(@today)
+      .order(:starts_at)
+
+    @previous_events = EventInstance
+      .for_partner(@partner)
+      .before_date(@today)
   end
 
   def previous_events
     @today = Time.now.beginning_of_day
-    @previous_events = @partner.events.before_date(@today)
+    @previous_event_instances = EventInstance
+      .for_partner(@partner)
+      .before_date(@today)
+      .order(starts_at: :desc)
   end
 
   private

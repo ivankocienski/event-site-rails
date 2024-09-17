@@ -4,12 +4,12 @@
 
 -# FIXME: multi-day events
 %h2
-  - if @event.ends_at.present?
-    From <em>#{@event.starts_at.strftime(EventsHelper::DATE_TIME_FORMAT)}</em>
-    to <em>#{@event.ends_at.strftime(EventsHelper::DATE_TIME_FORMAT)}</em>
+  - if @event_instance.ends_at.present?
+    From <em>#{@event_instance.starts_at.strftime(EventsHelper::DATE_TIME_FORMAT)}</em>
+    to <em>#{@event_instance.ends_at.strftime(EventsHelper::DATE_TIME_FORMAT)}</em>
   - else
-    At <em>#{@event.starts_at.strftime(EventsHelper::DATE_TIME_FORMAT)}</em>
-  on #{fancy_date_format(@event.starts_at)}
+    At <em>#{@event_instance.starts_at.strftime(EventsHelper::DATE_TIME_FORMAT)}</em>
+  on #{fancy_date_format(@event_instance.starts_at)}
 
 %p
   By #{link_to @event.organizer.name, partner_path(@event.organizer)}

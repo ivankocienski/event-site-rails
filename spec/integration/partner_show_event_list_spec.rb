@@ -6,8 +6,10 @@ RSpec.describe "Partner show", type: :feature do
 
     before :each do
       9.times do |n|
-        partner.events.create!(
-          name: 'Alpha event',
+        event = partner.events.create!(
+          name: 'Alpha event'
+        )
+        event.event_instances.create!(
           starts_at: FakeTime::TODAY,
           placecal_id: 200 + n
         )

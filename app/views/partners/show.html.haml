@@ -30,7 +30,7 @@
     %h2 Events from #{fancy_date_format(@today)}
     .partner-event-list= render_partner_event_by_day_list(@upcoming_events)
 
-  - if @previous_events.present?
+  - if @previous_events.any?
     %br
     %br
     %h3= link_to "See #{@previous_events.count} previous events", previous_events_partner_path(@partner)

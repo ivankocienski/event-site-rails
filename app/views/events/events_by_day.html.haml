@@ -9,7 +9,7 @@
 .events-listing
   %div
     = # %turbo-frame#events-on-day-list
-    - @events.each do |event|
-      = link_to_event_with_time_and_partner(event)
+    - @event_instances.each do |event_instance|
+      = link_to_event_instance_with_time_and_partner(event_instance)
 
 

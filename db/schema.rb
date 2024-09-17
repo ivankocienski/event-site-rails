@@ -25,8 +25,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_16_091602) do
     t.string "name"
     t.string "summary"
     t.string "description"
-    t.datetime "starts_at"
-    t.datetime "ends_at"
     t.string "publisher_url"
     t.integer "organizer_placecal_id"
     t.string "address_street"

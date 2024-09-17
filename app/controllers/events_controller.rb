@@ -36,17 +36,16 @@ class EventsController < ApplicationController
     today = Time.now
     @event = @event_instance.event
 
-    # TODO:
-    #   should we show upcoming events from partner?
-    #   OR other instances of this event?
-    #   (or both?)
-    @upcoming_partner_events = []
-#    @upcoming_partner_events = @event
-#      .organizer
-#      .events
-#      .joins(:event_instances)
-#      .from_day_onward(today)
-#      .where( "event_instances.id != ?", @event_instance.id )
+    @sibling_event_instances = EventInstance
+      .where(event_id: @event_instance.event_id)
+      .from_day_onward(today)
+      .order(:starts_at)
+
+    @upcoming_partner_events = EventInstance
+      .joins(:event)
+      .where(event: { partner_id: @event.partner_id })
+      .from_day_onward(today)
+      .order(:starts_at)
   end
 
   private

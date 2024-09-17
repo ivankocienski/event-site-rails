@@ -21,6 +21,14 @@
 - if @event.publisher_url.present?
   %p= external_link_to @event.publisher_url, text: 'More info'
 
+- if @sibling_event_instances.any?
+  %h2 This event in the future
+
+  -# %p #{@sibling_event_instances.count} counts
+
+  - @sibling_event_instances.each do |event_instance|
+    %p= link_to "#{fancy_date_format(event_instance.starts_at)} at #{fancy_time_format(event_instance.starts_at)}", event_path(event_instance)
+
 - if @upcoming_partner_events.present?
   %br
   %br

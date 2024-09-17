@@ -2,7 +2,7 @@
 
 %h1 Events on #{fancy_date_format(@epoch)}
 
-= render_day_navigator @first_day, @epoch
+= render_widget EventByDayNavigatorWidget, first_day: @first_day, show_day: @epoch
 
 %p= link_to '<- Show all days', events_path
 

@@ -1,4 +1,9 @@
 module ApplicationHelper
+
+  def render_widget(klass, args = {})
+    klass.new(self, args).render_html
+  end
+  
   def page_title_text
     title = content_for(:title)
     return "Event Site Rails" if title.blank?

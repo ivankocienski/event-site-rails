@@ -25,8 +25,8 @@ class EventsController < ApplicationController
   def show
     @event_instance = EventInstance
       .where( id: params[:id] )
-      #.joins(:event)
       .first
+    
     if @event_instance.blank?
       @message = "Could not find event with that ID"
       render 'home/not_found', status: :not_found

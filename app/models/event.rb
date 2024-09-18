@@ -25,21 +25,4 @@ class Event < ApplicationRecord
   def address
     @address ||= EventAddress.new(self)
   end
-
-  # needed ??
-
-  scope :from_day_onward, lambda { |epoch| 
-    joins(:event_instances)
-      .where("date(event_instances.starts_at) >= date(?)", epoch)
-  }
-
-  scope :on_day, lambda { |day| 
-    joins(:event_instances)
-      .where("date(event_instances.starts_at) = date(?)", day)
-  }
-
-  scope :before_date, lambda { |day|
-    joins(:event_instances)
-      .where("date(event_instances.starts_at) < date(?)", day)
-  }
 end

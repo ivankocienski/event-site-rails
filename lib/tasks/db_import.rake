@@ -179,33 +179,3 @@ namespace :db do
     end
   end
 end
-
-__END__
-
-  def import_events
-    path = Rails.root.join('db/fixtures/events.json')
-    puts "Importing events from #{path}"
-
-    data = JSON.parse(File.open(path).read)
-    data['data']['eventsByFilter'].each do |event_data|
-      organizer_id = event_data['organizer']['id'].to_i
-
-      partner = @partners_by_placecal_id[organizer_id]
-      raise "import_events: partner not found for organizer #{organizer_id}" if partner.blank?
-
-      event_data['address'] ||= {}
-      
-      partner.events.create!(
-        placecal_id: event_data['id'],
-        name: event_data['name'],
-        summary: event_data['summary'],
-        description: event_data['description'],
-        starts_at: Time.zone.parse(event_data['startDate']),
-        ends_at: Time.zone.parse(event_data['endDate']),
-        organizer_placecal_id: organizer_id,
-        address_street: event_data['address']['streetAddress'],
-        address_postcode: event_data['address']['postalCode']
-      )
-
-    end
-  end

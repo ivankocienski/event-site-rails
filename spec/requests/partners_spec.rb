@@ -15,6 +15,13 @@ RSpec.describe "Partners", type: :request do
       get "/partners/#{partner.id}"
       expect(response).to have_http_status(:success)
     end
+    
+    it "returns http not-found for invalid IDs" do
+      partner = given_a_partner_exists
+
+      get "/partners/12345"
+      expect(response).to have_http_status(:not_found)
+    end
   end
 
   describe "/partners/:id/previous_events" do

@@ -69,4 +69,35 @@ RSpec.describe Partner, type: :model do
   # the use of both filters simultaneously - but this 
   # could be tested in an integration test
 
+  context 'slugging' do
+    context '#slug' do
+      it 'generates a slug from the name/id' do
+        p1 = Partner.create!(name: 'A partner name', placecal_id: 100)
+        expect(p1.slug).to eq "#{p1.id}-a-partner-name"
+
+        # deals with non-word-characters
+        p2 = Partner.create!(name: 'A?! partner123 name $^; with~bad"letters', placecal_id: 101)
+        expect(p2.slug).to eq "#{p2.id}-a-partner123-name-with-bad-letters"
+      end
+    end
+
+    context '::with_slug' do
+      it 'finds partners based on slug' do
+
+        new_partner = Partner.create!(name: 'A partner name', placecal_id: 100)
+
+        # find by full slug
+        found_partner_1 = Partner.with_slug("#{new_partner.id}-a-partner-name").first
+        expect(found_partner_1).to eq new_partner
+
+        # with just ID
+        found_partner_2 = Partner.with_slug(new_partner.id.to_s).first
+        expect(found_partner_2).to eq new_partner
+
+        # finds nothing without the ID bit
+        found_partner_3 = Partner.with_slug('a-partner-name').first
+        expect(found_partner_3).to be nil
+      end
+    end
+  end
 end

@@ -43,7 +43,7 @@ class PartnersController < ApplicationController
   private
 
   def find_partner_for_param
-    @partner = Partner.where(id: params[:id]).first
+    @partner = Partner.with_slug(params[:id]).first
     return if @partner.present?
 
     @message = "Could not find partner with that ID"

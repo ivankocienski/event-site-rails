@@ -24,6 +24,16 @@ class Partner < ApplicationRecord
       .where(partner_keywords: { keyword_id: keyword.id })
   }
 
+  scope :with_slug, lambda { |slug_text|
+    return none unless slug_text =~ /^(\d+)[\w\-]*$/
+
+    where id: $1
+  }
+
+  def slug
+    ([ id ] + name.downcase.split(/\W+/)).join('-')
+  end
+
   class PartnerAddress
     attr_reader :street_address
     attr_reader :post_code
@@ -63,4 +73,5 @@ class Partner < ApplicationRecord
   def contact
     @contact ||= PartnerContact.new(self)
   end
+
 end

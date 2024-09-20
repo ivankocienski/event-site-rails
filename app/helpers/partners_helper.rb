@@ -12,7 +12,7 @@ module PartnersHelper
   def partner_address_info(partner)
     parts = []
     parts << external_link_to(partner.url) if partner.url.present?
-    parts << partner.address.to_s if partner.address.present?
+    parts << address_map_link_to(partner.address) if partner.address.present?
 
     parts.join(' | ').html_safe
   end

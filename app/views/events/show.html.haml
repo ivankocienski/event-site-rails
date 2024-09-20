@@ -14,7 +14,7 @@
 %p
   By #{link_to @event.organizer.name, partner_path(@event.organizer.slug)}
   - if @event.address.present?
-    &mdash; (#{@event.address.to_s})
+    &mdash; #{address_map_link_to @event.address}
 
 = format_for_content(@event.description)
 

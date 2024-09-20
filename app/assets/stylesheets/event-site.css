@@ -37,3 +37,7 @@ nav .active {
   font-weight: bold;
 }
 
+.indent {
+  padding-left: 2em;
+}
+

@@ -55,10 +55,17 @@ module PartnersHelper
   end
 
   def keywords_for_partner(partner)
+    extra_params = {
+      name: (@partner_name_filter if @partner_name_filter.present?)
+    }
+
     partner
       .keywords
       .order(:name)
-      .map { |kw| link_to kw.name, partners_path(keyword: kw.name), class: 'keyword' }
+      .map { |kw|
+        link_to kw.name,
+          partners_path(extra_params.merge({keyword: kw.name})),
+          class: 'keyword' }
       .join(' &bull; ')
       .html_safe
   end

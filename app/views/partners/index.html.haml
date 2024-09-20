@@ -18,9 +18,8 @@
 - @partners.each do |partner|
   %article.partner
     %h3= link_to partner.name, partner_path(partner.slug)
-    %p
-      = partner.summary
+    .indent
+      %p= partner.summary
       - if partner.partner_keywords.any?
-        %br
-        %small &nbsp;&nbsp;&nbsp;&nbsp; #{keywords_for_partner partner}
-    %br
+        %p= keywords_for_partner partner
+      %br

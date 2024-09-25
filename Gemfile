@@ -29,8 +29,9 @@ gem "tzinfo-data", platforms: %i[ windows jruby ]
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
 
-gem "haml-rails"
-gem "sassc-rails"
+gem "haml-rails" # view template language
+gem "sassc-rails" # scss
+gem "ancestry" # for geo-location nesting
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

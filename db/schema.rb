@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_09_16_091602) do
+ActiveRecord::Schema[7.2].define(version: 2024_09_25_085243) do
   create_table "event_instances", force: :cascade do |t|
     t.integer "placecal_id", null: false
     t.integer "event_id", null: false
@@ -32,6 +32,16 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_16_091602) do
     t.integer "partner_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "geo_enclosures", force: :cascade do |t|
+    t.string "name"
+    t.string "ons_id", null: false
+    t.integer "ons_version", null: false
+    t.string "ancestry", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["ancestry"], name: "index_geo_enclosures_on_ancestry"
   end
 
   create_table "keywords", force: :cascade do |t|

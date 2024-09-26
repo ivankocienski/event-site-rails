@@ -2,6 +2,11 @@ class Event < ApplicationRecord
   belongs_to :partner
   alias_method :organizer, :partner
 
+  belongs_to :address_ward, 
+    foreign_key: :address_geo_enclosure_id,
+    class_name: 'GeoEnclosure',
+    optional: true
+
   has_many :event_instances, dependent: :destroy
 
   class EventAddress

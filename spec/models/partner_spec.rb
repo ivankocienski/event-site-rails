@@ -100,4 +100,23 @@ RSpec.describe Partner, type: :model do
       end
     end
   end
+
+  context 'address_geo_enclosure' do
+    let(:geo_enclosure) {
+      GeoEnclosure.create! name: 'alpha', ons_id: 'E001', ons_version: 2000, ons_type: 'ward'
+    }
+
+    it 'can be setup' do
+      partner = Partner.create! name: 'Alpha partner', placecal_id: 123
+      expect(partner.address_ward).to be nil
+
+      partner.address_ward = geo_enclosure
+      partner.save!
+    end
+
+    it 'can be read' do
+      partner = Partner.create!(name: 'Alpha partner', placecal_id: 123, address_ward: geo_enclosure)
+      expect(partner.address_ward).to be_a(GeoEnclosure)
+    end
+  end
 end

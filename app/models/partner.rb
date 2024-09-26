@@ -5,6 +5,11 @@ class Partner < ApplicationRecord
   has_many :partner_keywords, dependent: :destroy
   has_many :keywords, through: :partner_keywords
 
+  belongs_to :address_ward, 
+    foreign_key: :address_geo_enclosure_id,
+    class_name: 'GeoEnclosure',
+    optional: true
+
   scope :with_fuzzy_name, lambda { |name_string|
     name_string = name_string.to_s.gsub(/\s+/, '') # remove whitespace
     return none if name_string.blank?

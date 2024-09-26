@@ -1,0 +1,187 @@
+#!/usr/bin/env ruby
+
+=begin
+
+Script for generating `db/fixtures/geo-data.json.zip` - which is
+used by the `db:import:geo-data` rake task for loading and applying
+GeoEnclosures to partners and events.
+
+This data is free from the UK Office of National Statistics (ONS).
+https://geoportal.statistics.gov.uk/datasets/73ce619853044aaaa6f7fa5b90765b85/about
+
+Warning: the data as provided doesn't seem to conform to any kind
+of standard so this script may require being edited for each dataset load.
+
+See `/app/models/geo_enclosure.rb` for a description of the data structures
+
+To run:
+- download data set
+- decompress in `tmp/geo-data`
+- copy/modify this script to point to that folder and the correct filenames
+- run with `ruby bin/parsing-postcode-data.rb`
+- run import rake task to apply new geo-enclosures
+- commit data file to repo
+
+Another warning: this script takes a long time to run
+
+=end
+
+# require File.expand_path('config/environment')
+
+require 'zip'
+require 'csv'
+require 'json'
+
+module GeoDataLoader
+  extend self
+
+  # modify these constants as needed
+  
+  GEO_VERSION = 2022_05 # may 2022
+
+  DATA_DIR = File.expand_path('tmp/geo-data/')
+
+  COUNTRY_SRC = 'Documents/Country names and codes UK as at 08_12.csv'
+  REGION_SRC = 'Documents/Region names and codes EN as at 12_20 (RGN).csv'
+  COUNTY_SRC = 'Documents/County names and codes UK as at 04_21_NSPL.csv'
+  DISTRICT_SRC = 'Documents/LA_UA names and codes UK as at 04_21.csv'
+  WARD_SRC = 'Documents/Ward names and codes UK as at 05_21 NSPL.csv'
+  POSTCODE_SRC = 'Data/NSPL_MAY_2022_UK.csv'
+
+  OUTPUT_DIR = File.expand_path('db/fixtures')
+
+  def run
+    puts "loading geo data from #{DATA_DIR}"
+
+    puts "  countries"
+    load_countries
+
+    puts "  regions"
+    load_regions
+
+    puts "  counties"
+    load_counties
+
+    puts "  districts"
+    load_districts
+
+    puts "  wards"
+    load_wards
+
+    puts "  postcodes"
+    load_postcodes
+
+    payload = {
+      version: GEO_VERSION,
+      postcodes: postcodes,
+      enclosures: enclosures
+    }
+
+    output_path = File.join(OUTPUT_DIR, 'geo-data.json.zip')
+    puts "saving to #{output_path}"
+
+    Zip::File.open(output_path, create: true) do |zip|
+      zip.get_output_stream('geo-data.json') do |file|
+        file.write payload.to_json
+      end
+    end
+
+    puts "done."
+
+  ensure
+    puts "  enclosures.count=#{enclosures.count}"
+    puts "  postcodes.count=#{postcodes.count}"
+  end
+
+  def add_enclosure(code, name, type)
+    return if code =~ /^.9+$/ # ignore X99999999 codes
+
+    raise "duplicate #{type} for code #{code} / #{name} (is #{enclosures[code].to_json})" if enclosures[code]
+    enclosures[code] = { name: name, type: type }
+  end
+
+  def load_wards
+    CSV.foreach(File.join(DATA_DIR, WARD_SRC), headers: true) do |row|
+      row = row.to_a
+      code = row[0][1]
+      name = row[1][1]
+
+      add_enclosure code, name, :ward
+    end
+  end
+
+  def load_countries
+    CSV.foreach(File.join(DATA_DIR, COUNTRY_SRC), headers: true) do |row|
+      row = row.to_a
+      code = row[0][1]
+      name = row[2][1]
+
+      add_enclosure code, name, :country
+    end
+  end
+
+  def load_regions
+    CSV.foreach(File.join(DATA_DIR, REGION_SRC), headers: true) do |row|
+      row = row.to_a
+      code = row[0][1]
+      name = row[2][1]
+
+      add_enclosure code, name, :region
+    end
+  end
+
+  def load_counties
+    CSV.foreach(File.join(DATA_DIR, COUNTY_SRC), headers: true) do |row|
+      row = row.to_a
+      code = row[0][1]
+      name = row[1][1]
+
+      add_enclosure code, name, :county
+    end
+  end
+
+  def load_districts
+    CSV.foreach(File.join(DATA_DIR, DISTRICT_SRC), headers: true) do |row|
+      row = row.to_a
+      code = row[0][1]
+      name = row[1][1]
+
+      add_enclosure code, name, :district
+    end
+  end
+
+  def load_postcodes
+    CSV.foreach(File.join(DATA_DIR, POSTCODE_SRC), headers: true) do |row|
+      row = row.to_h
+
+      clean_code = row['pcd'].gsub(/\s+/, '')
+
+      data = {
+        postcode: row['pcd'],
+        enclosure_codes: [
+          row['ward'], # ward
+          row['laua'], # district
+          row['cty'],  # county
+          row['rgn'],  # region
+          row['ctry']  # country
+        ]
+      }
+
+      postcodes[clean_code] = data
+    end
+  end
+
+  #
+  #
+
+  def enclosures
+    @enclosures ||= {}
+  end
+
+  def postcodes
+    @postcodes ||= {}
+  end
+end
+
+GeoDataLoader.run
+

@@ -32,6 +32,7 @@ gem "bootsnap", require: false
 gem "haml-rails" # view template language
 gem "sassc-rails" # scss
 gem "ancestry" # for geo-location nesting
+gem "rubyzip" # for de/compressing geo-enclosure postcode data
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

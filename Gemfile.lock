@@ -265,6 +265,7 @@ GEM
       rubocop-performance
       rubocop-rails
     ruby-progressbar (1.13.0)
+    rubyzip (2.3.2)
     sassc (2.4.0)
       ffi (~> 1.9)
     sassc-rails (2.1.2)
@@ -331,6 +332,7 @@ DEPENDENCIES
   rails-controller-testing
   rspec-rails
   rubocop-rails-omakase
+  rubyzip
   sassc-rails
   shoulda-matchers (~> 5.0)
   sprockets-rails

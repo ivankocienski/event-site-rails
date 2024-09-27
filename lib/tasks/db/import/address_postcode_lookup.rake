@@ -37,6 +37,7 @@ module AddressPostcodeLookup
         # puts postcode_data.to_json
         postcode_enclosures = postcode_data['enclosure_codes']
         entity.address_ward = find_or_create_geo_enclosure_for(postcode_enclosures)
+        entity.save!
       end
     end
   end
@@ -85,7 +86,7 @@ end
 namespace :db do
   namespace :import do
     desc 'Loads and applies GeoEnclosures to partners and events'
-    task address_poscode_lookup: :environment do
+    task address_postcode_lookup: :environment do
       AddressPostcodeLookup.run
     end
   end

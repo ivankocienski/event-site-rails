@@ -18,8 +18,9 @@ Given the correct ruby version is installed
   cd ${project_dir}
   bundle
   rails db:migrate
-  rails db:import:partners # loads partners and events from PC snapshot
-  rails db:import:load_and_tag_keywords # loads keywords and classifies partners
+  rails db:import:placecal_snapshot # loads partners and events from PC snapshot
+  rails db:import:load_keywords_and_tag_partners # loads keywords and classifies partners
+  rails db:import:address_poscode_lookup # loads keywords and classifies partners
 ```
 
 ## To run

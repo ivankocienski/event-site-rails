@@ -8,6 +8,9 @@ class PartnersController < ApplicationController
     partner_keyword_param = params[:keyword].to_s.strip
     @keyword_for_filter = Keyword.where(name: partner_keyword_param).first if partner_keyword_param.present?
 
+    geo_param = params[:geo]
+    @geo_enclosure = GeoEnclosure.where(id: geo_param).first if geo_param.present?
+
     @partners = Partner.all
 
     # name
@@ -16,6 +19,9 @@ class PartnersController < ApplicationController
     # keyword
     @partners = @partners.with_keyword(@keyword_for_filter) if @keyword_for_filter.present?
 
+    # geo
+    @partners = @partners.in_geo_enclosure(@geo_enclosure) if @geo_enclosure.present?
+    
     @partners = @partners.order(:name)
   end
 

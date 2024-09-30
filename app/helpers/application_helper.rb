@@ -15,7 +15,10 @@ module ApplicationHelper
   def address_map_link_to(address)
     address_s = address.to_s
     url = "https://maps.google.com/?q=#{URI::DEFAULT_PARSER.escape(address_s)}"
-    external_link_to url, text: address_s, alt: 'Open map in new tab'
+    link = external_link_to(url, text: address_s, alt: 'Open map in new tab')
+    ward = (" (in #{address.ward.name})" if address.ward.present?)
+
+    "#{link}#{ward}".html_safe
   end
 
   def format_for_content(text)

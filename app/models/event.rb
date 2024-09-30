@@ -12,10 +12,12 @@ class Event < ApplicationRecord
   class EventAddress
     attr_reader :street_address
     attr_reader :post_code
+    attr_reader :ward
 
     def initialize(from)
       @street_address = from.address_street
       @post_code = from.address_postcode
+      @ward = from.address_ward
     end
 
     def present?

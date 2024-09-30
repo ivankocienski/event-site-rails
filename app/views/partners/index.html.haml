@@ -5,10 +5,11 @@
 = form_tag partners_path, method: 'GET' do
   = text_field_tag :name, @partner_name_filter, placeholder: 'Filter by name'
   = hidden_field_tag :keyword, @keyword_for_filter.name if @keyword_for_filter.present?
+  = hidden_field_tag :geo, @geo_enclosure.id if @geo_enclosure.present?
   = button_tag 'Apply', name: ''
 
-- if @partner_name_filter.present? || @keyword_for_filter.present?
-  %h2= partner_index_filter_title_text(@partner_name_filter, @keyword_for_filter)
+- if @partner_name_filter.present? || @keyword_for_filter.present? || @geo_enclosure.present?
+  %h2= partner_index_filter_title_text(@partner_name_filter, @keyword_for_filter, @geo_enclosure)
   %p= link_to 'Reset filter', partners_path
   %br
 
@@ -20,6 +21,8 @@
     %h3= link_to partner.name, partner_path(partner.slug)
     .indent
       %p= partner.summary
+      - if partner.address.ward.present?
+        %p in #{link_to partner.address.ward.name, partners_path(geo: partner.address.ward.id)}
       - if partner.partner_keywords.any?
         %p= keywords_for_partner partner
       %br

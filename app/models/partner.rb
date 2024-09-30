@@ -35,6 +35,14 @@ class Partner < ApplicationRecord
     where id: $1
   }
 
+  scope :in_geo_enclosure, lambda { |geo_enclosure|
+    return all if geo_enclosure.blank?
+
+    return where(address_geo_enclosure_id: geo_enclosure.id) if geo_enclosure.ward_level?
+
+    all # TODO is contained within ward set
+  }
+
   def slug
     ([ id ] + name.downcase.split(/\W+/)).join('-')
   end
@@ -42,10 +50,12 @@ class Partner < ApplicationRecord
   class PartnerAddress
     attr_reader :street_address
     attr_reader :post_code
+    attr_reader :ward
 
     def initialize(from)
       @street_address = from.address_street
       @post_code = from.address_postcode
+      @ward = from.address_ward
     end
 
     def present?

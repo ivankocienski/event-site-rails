@@ -12,13 +12,19 @@ module ApplicationHelper
     "<span class='external-link'>#{link}</span>".html_safe
   end
 
-  def address_map_link_to(address)
+  def address_map_link_to(address, filter_path)
     address_s = address.to_s
     url = "https://maps.google.com/?q=#{URI::DEFAULT_PARSER.escape(address_s)}"
     link = external_link_to(url, text: address_s, alt: 'Open map in new tab')
-    ward = (" (in #{address.ward.name})" if address.ward.present?)
+    ward_part = nil
 
-    "#{link}#{ward}".html_safe
+    ward = address.ward
+    if ward.present?
+      ward_link = send(filter_path, { geo: ward.id })
+      ward_part = " (in #{link_to ward.name, ward_link})"
+    end
+
+    "#{link}#{ward_part}".html_safe
   end
 
   def format_for_content(text)

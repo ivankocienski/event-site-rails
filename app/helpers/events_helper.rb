@@ -21,7 +21,11 @@ module EventsHelper
     time_part = fancy_time_format(event_instance.starts_at)
     event_name_part = link_to(event.name, event_path(event_instance.id))
     partner_part = link_to("<em>#{event.organizer.name}</em>".html_safe, partner_path(event.organizer.slug))
-    "<p><span class='time'>#{time_part}</span> #{event_name_part} &mdash; #{partner_part}</p>".html_safe
+
+    ward = event.address.ward
+    geo_part = (" in #{link_to ward.name, events_path(geo: ward.id)}" if ward.present? )
+
+    "<p><span class='time'>#{time_part}</span> #{event_name_part} &mdash; #{partner_part}#{geo_part}</p>".html_safe
   end
 
   def render_event_by_day_list(event_instances)

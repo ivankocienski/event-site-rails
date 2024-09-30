@@ -12,14 +12,18 @@ class EventsController < ApplicationController
         .on_day(@epoch)
         .joins(:event)
         .order(:starts_at)
-      render :events_by_day
-
-    else
-      @event_instances = EventInstance
-        .from_day_onward(@epoch)
-        .joins(:event)
-        .order(:starts_at)
+      return render(:events_by_day)
     end
+
+    geo_param = params[:geo]
+    @geo_enclosure = GeoEnclosure.where(id: geo_param).first if geo_param.present?
+
+    @event_instances = EventInstance
+      .from_day_onward(@epoch)
+      .joins(:event)
+      .order(:starts_at)
+
+    @event_instances = @event_instances.where(event: { address_geo_enclosure_id: @geo_enclosure.id }) if @geo_enclosure.present?
   end
 
   def show

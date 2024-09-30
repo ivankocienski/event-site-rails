@@ -1,5 +1,10 @@
 - content_for(:title) { "Upcoming Events" }
 
-%h1 Events
+- if @geo_enclosure.present?
+  %h1 Events in <em>#{@geo_enclosure.name}</em>
+  %p= link_to 'Show events anywhere', events_path
+
+- else
+  %h1 Events
 
 .events-listing= render_event_by_day_list(@event_instances)

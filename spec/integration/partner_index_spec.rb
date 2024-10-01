@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe "Partner index", type: :feature do
-  before :each do
+  def given_some_partners_exist
     partners = []
 
     partners += 10.times.map do |n|
@@ -25,6 +25,8 @@ RSpec.describe "Partner index", type: :feature do
   end
 
   it 'has filtering' do
+    given_some_partners_exist
+
     visit '/'
 
     # visit partners index, see all partners    
@@ -63,5 +65,43 @@ RSpec.describe "Partner index", type: :feature do
 
     # FIXME: test having a name filter active and clicking on
     #   on keyword should keep the name filter param
+  end
+
+  it 'has locations' do
+    geo_1 = GeoEnclosure.create!(
+      name: 'Alpha Ward',
+      ons_id: 'X000',
+      ons_version: 202020,
+      ons_type: 'ward'
+    )
+    geo_2 = GeoEnclosure.create!(
+      name: 'Beta Ward',
+      ons_id: 'X001',
+      ons_version: 202020,
+      ons_type: 'ward'
+    )
+
+    partner_1 = Partner.build(
+      name: 'Gamma Partner',
+      placecal_id: 300
+    )
+    partner_1.address_ward = geo_1
+    partner_1.save!
+
+    partner_2 = Partner.build(
+      name: 'Epsilon Partner',
+      placecal_id: 400
+    )
+    partner_2.address_ward = geo_2
+    partner_2.save!
+
+    visit '/'
+    click_link 'Partners'
+
+    expect(page).to have_selector('article.partner', count: 2)
+
+    click_link 'Alpha Ward'
+    expect(page).to have_selector('h2', text: 'Filtering in area Alpha Ward')
+    expect(page).to have_selector('article.partner', count: 1)
   end
 end

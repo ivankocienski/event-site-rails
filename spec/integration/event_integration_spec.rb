@@ -6,9 +6,31 @@ RSpec.describe "Events", type: :feature do
   context 'index' do
     let(:partner) { Partner.create! name: 'Alpha Partner', placecal_id: 100 }
 
-    def create_events_for_partner(count, id_offset, time_offset)
+    let(:geo_1) {
+      GeoEnclosure.create!(
+        name: 'Alpha Ward',
+        ons_id: 'X000',
+        ons_version: 202020,
+        ons_type: 'ward'
+      )
+    }
+
+    let(:geo_2) {
+      GeoEnclosure.create!(
+        name: 'Beta Ward',
+        ons_id: 'X001',
+        ons_version: 202020,
+        ons_type: 'ward'
+      )
+    }
+
+    def create_events_for_partner(count, id_offset, time_offset, geo=nil)
       count.times do |n|
-        event = partner.events.create!( name: 'Beta event' )
+        event = partner.events.create!(
+          name: 'Beta event',
+          address_ward: geo
+        )
+
         event.event_instances.create!(
           starts_at: FakeTime::TODAY + time_offset,
           placecal_id: id_offset + n
@@ -19,9 +41,9 @@ RSpec.describe "Events", type: :feature do
     before :each do
       create_events_for_partner 4, 200, 0
       create_events_for_partner 2, 300, 1.day
-      create_events_for_partner 3, 400, 2.days
+      create_events_for_partner 3, 400, 2.days, geo_1
       create_events_for_partner 1, 500, 3.days
-      create_events_for_partner 4, 600, 4.days
+      create_events_for_partner 4, 600, 4.days, geo_2
       create_events_for_partner 5, 700, 5.days
       create_events_for_partner 1, 800, 6.days
     end
@@ -45,6 +67,31 @@ RSpec.describe "Events", type: :feature do
           click_link 'Monday 3rd June, 2024'
           expect(page).to have_selector('h1', text: 'Events on Monday 3rd June, 2024')
           expect(page).to have_selector('.events-listing p', count: 1)
+        end
+      end
+    end
+
+    context 'with location filtering' do
+      it 'shows only events in that location' do
+        travel_to FakeTime::TODAY do
+          visit '/'
+          click_link 'Events'
+          # puts page.body
+
+          expect(page).to have_selector('.events-listing p', count: 20)
+
+          # do the filtering
+          within '.events-listing p:nth-child(10)' do
+            click_link 'Alpha Ward'
+          end
+
+          expect(page).to have_selector('.events-listing p', count: 3)
+          expect(page).to have_selector('h1', text: 'Events in Alpha Ward')
+
+          # reset
+          click_link 'Show events anywhere'
+          expect(page).to have_selector('.events-listing p', count: 20)
+          expect(page).to have_selector('h1', text: 'Events')
         end
       end
     end

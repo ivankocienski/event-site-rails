@@ -57,7 +57,8 @@ module PartnersHelper
 
   def keywords_for_partner(partner)
     extra_params = {
-      name: (@partner_name_filter if @partner_name_filter.present?)
+      name: (@partner_name_filter if @partner_name_filter.present?),
+      geo: (@geo_enclosure.id if @geo_enclosure.present?)
     }
 
     partner

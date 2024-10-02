@@ -16,7 +16,7 @@
   - if @event.address.present?
     &mdash; #{address_map_link_to @event.address, :events_path}
 
-= format_for_content(@event.description)
+#description.indent= @event.description_html.to_s.html_safe
 
 - if @event.publisher_url.present?
   %p= external_link_to @event.publisher_url, text: 'More info'

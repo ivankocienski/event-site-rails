@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_09_25_110903) do
+ActiveRecord::Schema[7.2].define(version: 2024_10_02_092038) do
   create_table "event_instances", force: :cascade do |t|
     t.integer "placecal_id", null: false
     t.integer "event_id", null: false
@@ -33,6 +33,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_25_110903) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "address_geo_enclosure_id"
+    t.text "description_html"
     t.index ["address_geo_enclosure_id"], name: "index_events_on_address_geo_enclosure_id"
   end
 
@@ -78,6 +79,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_25_110903) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "address_geo_enclosure_id"
+    t.text "description_html"
     t.index ["address_geo_enclosure_id"], name: "index_partners_on_address_geo_enclosure_id"
     t.index ["placecal_id"], name: "index_partner_placecal_id", unique: true
   end

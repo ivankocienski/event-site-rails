@@ -19,7 +19,7 @@
 
 - if @partner.description.present?
   %h2 Description
-  = format_for_content(@partner.description)
+  #description.indent= @partner.description_html.to_s.html_safe
 
 - if @upcoming_events.blank? && @previous_events.blank?
   %br

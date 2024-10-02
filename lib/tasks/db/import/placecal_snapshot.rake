@@ -6,6 +6,10 @@ module PlacecalSnapshotImporter
     Event.destroy_all
   end
 
+  def make_html_from_text(text)
+    Kramdown::Document.new(text).to_html
+  end
+
   def import_partners
     path = Rails.root.join('db/fixtures/partners.json')
     puts "Importing partners from #{path}"
@@ -39,7 +43,8 @@ module PlacecalSnapshotImporter
           url: partner_url,
           address_street: partner_address_street,
           address_postcode: partner_address_postcode,
-          logo_url: partner_logo_url
+          logo_url: partner_logo_url,
+          description_html: make_html_from_text(partner_description)
         )
     end
   end
@@ -80,7 +85,8 @@ module PlacecalSnapshotImporter
             organizer_placecal_id: organizer_id,
             address_street: event_data['address']['streetAddress'],
             address_postcode: event_data['address']['postalCode'],
-            partner_id: partner.id
+            partner_id: partner.id,
+            description_html: make_html_from_text(event_data['description'])
           },
           instances: [ event_instance ]
         }

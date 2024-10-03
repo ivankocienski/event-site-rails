@@ -6,16 +6,6 @@ module EventsHelper
     link_to fancy_date_format(date), events_path(day: date.strftime('%Y-%m-%d'))
   end
 
-  def fancy_time_format(time)
-    time.strftime(time.min == 0 ? '%l%P' : '%l.%M%P')
-  end
-
-  def fancy_date_format(time)
-    day_s = time.day.ordinalize
-
-    time.strftime "%A #{day_s} %B, %Y"
-  end
-
   def link_to_event_instance_with_time_and_partner(event_instance)
     event = event_instance.event
     time_part = fancy_time_format(event_instance.starts_at)

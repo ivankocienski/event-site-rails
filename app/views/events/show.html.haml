@@ -5,10 +5,10 @@
 -# FIXME: multi-day events
 %h2
   - if @event_instance.ends_at.present?
-    From <em>#{@event_instance.starts_at.strftime(EventsHelper::DATE_TIME_FORMAT)}</em>
+    From <em>#{fancy_time_format(@event_instance.starts_at)}</em>
     for <em title="#{@event_instance.ends_at.strftime(EventsHelper::DATE_TIME_FORMAT)}">#{fancy_time_period_format(@event_instance.starts_at, @event_instance.ends_at)}</em>
   - else
-    At <em>#{@event_instance.starts_at.strftime(EventsHelper::DATE_TIME_FORMAT)}</em>
+    At <em>#{fancy_time_format(@event_instance.starts_at)}</em>
   on #{fancy_date_format(@event_instance.starts_at)}
 
 %p

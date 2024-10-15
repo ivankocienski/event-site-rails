@@ -17,18 +17,6 @@ module PartnersHelper
     parts.join(' | ').html_safe
   end
 
-  def partner_index_filter_title_text(name_filter, keyword_filter, geo_filter)
-    return if name_filter.blank? && keyword_filter.blank? && geo_filter.blank?
-
-    text = [
-      ("by title with '<em>#{name_filter}</em>'" if name_filter.present?),
-      ("on keyword '<em>#{keyword_filter.name}</em>'" if keyword_filter.present?),
-      ("in area <em>#{geo_filter.name}</em>" if geo_filter.present?)
-    ].keep_if(&:present?).join(' and ')
-
-    "Filtering #{text}".html_safe
-  end
-
   def render_partner_event_by_day_list(event_instances)
     return if event_instances.empty?
 

@@ -34,8 +34,12 @@ gem "sassc-rails" # scss
 gem "ancestry" # for geo-location nesting
 gem "rubyzip" # for de/compressing geo-enclosure postcode data
 gem "kramdown"
-gem "opensearch-ruby"
 gem "dotenv"
+gem "oj" # faster json encoding / decoding
+
+# search
+gem "searchkick"
+gem "opensearch-ruby"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

@@ -22,6 +22,8 @@ RSpec.describe "Partner index", type: :feature do
     15.times do |n|
       partners[n + 2].keywords << kw2
     end
+
+    Partner.reindex
   end
 
   it 'has filtering' do

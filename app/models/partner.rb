@@ -1,4 +1,13 @@
 class Partner < ApplicationRecord
+  searchkick # opensearch
+  
+  def search_data
+    {
+      name: name,
+      summary: summary,
+      description: description
+    }
+  end
 
   has_many :events
 
@@ -10,16 +19,16 @@ class Partner < ApplicationRecord
     class_name: 'GeoEnclosure',
     optional: true
 
-  scope :with_fuzzy_name, lambda { |name_string|
-    name_string = name_string.to_s.gsub(/\s+/, '') # remove whitespace
-    return none if name_string.blank?
+  scope :with_fuzzy_string, lambda { |string_value|
+    string_value = string_value.to_s.gsub(/\s+/, '') # remove whitespace
+    return none if string_value.empty?
+    
+    # uses searchkick
+    string_match_ids = Partner.search(string_value, select: [:id], load: false).map(&:id)
+    # puts "string_match_ids=#{string_match_ids.to_json}"
+    return none if string_match_ids.empty?
 
-    name_pattern = name_string
-      .chars
-      .map { |ch| sanitize_sql(ch) }
-      .join('%')
-
-    where('name LIKE ?', "%#{name_pattern}%")
+    where(id: string_match_ids)
   }
 
   scope :with_keyword, lambda { |keyword|

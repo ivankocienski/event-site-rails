@@ -7,12 +7,13 @@ A WIP project that models a very basic "event listing" site.
 - git (for cloning)
 - [rbenv](https://github.com/rbenv/rbenv), [rbenv-gemset](https://github.com/jf/rbenv-gemset) and [ruby-build](https://github.com/rbenv/ruby-build) (not needed but helpful)
 - gcc
-- sqlite3
+- sqlite3 and dev libs
+- opensearch (or docker)
 - (probably other binary dependencies gems rely on)
 
 ## Preflight
 
-Given the correct ruby version is installed
+Given the correct ruby version is installed and the OpenSearch server is running.
 
 ```
   cd ${project_dir}

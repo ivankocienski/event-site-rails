@@ -8,19 +8,17 @@
   = @partner_filter.title_part(self) 
   %br
 
-  - if @partner_filter.result.empty?
-    %h2 No results found :(
+- if @partner_filter.result.empty?
+  %h2 No results found :(
 
-  - @partner_filter.result.partners.each do |partner|
-    %article.partner
-      %h3= link_to partner.name, partner_path(partner.slug)
-      .indent
-        %p= partner.summary
-        - if partner.address.ward.present?
-          %p in #{link_to partner.address.ward.name, partners_path(geo: partner.address.ward.id)}
-        - if partner.partner_keywords.any?
-          %p= keywords_for_partner partner
-        %br
+- @partner_filter.result.each do |partner|
+  %article.partner
+    %h3= link_to partner.name, partner_path(partner.slug)
+    .indent
+      %p= partner.summary
+      - if partner.address.ward.present?
+        %p in #{link_to partner.address.ward.name, partners_path(geo: partner.address.ward.id)}
+      - if partner.partner_keywords.any?
+        %p= keywords_for_partner partner
+      %br
 
-- else
-  %h2 FIXME: show all partners ordered by name here

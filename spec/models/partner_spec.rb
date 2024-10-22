@@ -17,19 +17,20 @@ RSpec.describe Partner, type: :model do
         name: 'fine carpet co.',
         placecal_id: 102
       )
+      Partner.reindex
     end
 
     it 'finds names with a fuzzy string match' do
-      # in any part of the string
-      result = Partner.with_fuzzy_name('burg').first
+      # finds stemmed word (burger in burgers)
+      result = Partner.with_fuzzy_string('bob burger').first
       expect(result.placecal_id).to be 101
 
       # case insensitive
-      result = Partner.with_fuzzy_name('alpha').first
+      result = Partner.with_fuzzy_string('alpha').first
       expect(result.placecal_id).to be 100
 
       # deals with whitespace
-      result = Partner.with_fuzzy_name("  \t\r\n").first
+      result = Partner.with_fuzzy_string("  \t\r\n").first
       expect(result).to be nil
     end
   end

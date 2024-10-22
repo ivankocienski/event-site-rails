@@ -4,7 +4,6 @@ class PartnersController < ApplicationController
 
   def index
     @partner_filter = PartnersFilter.new(params)
-    # @partners = @partner_filter.result
   end
 
   def show

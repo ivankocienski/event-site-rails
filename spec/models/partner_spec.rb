@@ -22,7 +22,7 @@ RSpec.describe Partner, type: :model do
 
     it 'finds names with a fuzzy string match' do
       # finds stemmed word (burger in burgers)
-      result = Partner.with_fuzzy_string('bob burger').first
+      result = Partner.with_fuzzy_string('bob burg').first
       expect(result.placecal_id).to be 101
 
       # case insensitive

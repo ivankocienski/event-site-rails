@@ -16,6 +16,9 @@ class PartnersFilter
     @name_value ||= @params[:name].to_s.strip
   end
 
+  #def link_to(title, options={})
+  #end
+
   def keyword_value
     @keyword_value ||= 
       begin

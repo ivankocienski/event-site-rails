@@ -8,7 +8,7 @@
   = @partner_filter.title_part(self) 
   %br
 
-- if @partner_filter.result.empty?
+- if @partner_filter.empty?
   %h2 No results found :(
 
 - @partner_filter.result.each do |partner|

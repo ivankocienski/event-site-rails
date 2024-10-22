@@ -20,7 +20,7 @@ class Partner < ApplicationRecord
     optional: true
 
   scope :with_fuzzy_string, lambda { |string_value|
-    string_value = string_value.to_s.gsub(/\s+/, '') # remove whitespace
+    string_value = string_value.to_s.strip
     return none if string_value.empty?
     
     # uses searchkick

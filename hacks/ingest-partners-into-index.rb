@@ -181,4 +181,5 @@ __END__
 #
 #    where('name LIKE ?', "%#{name_pattern}%")
 #  }
-
+partners_test/_search 
+{"query":{"bool":{"should":[{"dis_max":{"queries":[{"multi_match":{"query":"zulu alpha","boost":10,"operator":"and","analyzer":"searchkick_search","fields":["*.analyzed"],"type":"best_fields"}},{"multi_match":{"query":"zulu alpha","boost":10,"operator":"and","analyzer":"searchkick_search2","fields":["*.analyzed"],"type":"best_fields"}},{"multi_match":{"query":"zulu alpha","boost":1,"operator":"and","analyzer":"searchkick_search","fuzziness":1,"prefix_length":0,"max_expansions":3,"fuzzy_transpositions":true,"fields":["*.analyzed"],"type":"best_fields"}},{"multi_match":{"query":"zulu alpha","boost":1,"operator":"and","analyzer":"searchkick_search2","fuzziness":1,"prefix_length":0,"max_expansions":3,"fuzzy_transpositions":true,"fields":["*.analyzed"],"type":"best_fields"}}]}}]}},"timeout":"11000ms","_source":["id"],"size":10000}

@@ -33,9 +33,10 @@ gem "haml-rails" # view template language
 gem "sassc-rails" # scss
 gem "ancestry" # for geo-location nesting
 gem "rubyzip" # for de/compressing geo-enclosure postcode data
-gem "kramdown"
-gem "dotenv"
+gem "kramdown" # markdown
+gem "dotenv" # environment config
 gem "oj" # faster json encoding / decoding
+gem "faraday" # HTTP for poking remote APIs
 
 # search
 gem "searchkick"

@@ -1,0 +1,117 @@
+#!/usr/bin/env ruby
+
+require 'oj'
+require 'faraday'
+require 'active_support/time'
+
+module PlacecalApiSnapshotter
+  extend self
+
+  PLACECAL_URL = 'https://placecal.org'
+  END_POINT = '/api/v1/graphql'
+  PLACECAL_TAG_ID = 3 # trans dimension (london)
+
+  def run
+    filename = Time.new.strftime('%Y-%m-%d-%H-%M-%S-snapshot.json')
+    puts "snapshot #{filename}"
+
+    pc_partners = pc_read_partners
+    puts "  pulled #{pc_partners.count} partners"
+
+    from_date = Time.new - 1.year
+    to_date = Time.new + 1.year
+    pc_events = pc_read_events(from_date, to_date)
+    puts "  pulled #{pc_events.count} events"
+
+    snapshot_path = File.expand_path(File.join('db/snapshots/', filename))
+    puts "  saving to #{snapshot_path}"
+
+    File.open(snapshot_path, 'w') do |file|
+      payload = {
+        partners: pc_partners,
+        events: pc_events
+      }
+      file.puts payload.to_json
+    end
+
+    puts "  done."
+  end
+
+  def pc_read_partners
+    partner_response = do_graphql_query(
+      <<-QUERY
+        partnersByTag(tagId: #{PLACECAL_TAG_ID}) {
+          id
+          name
+          description
+          summary
+          contact { email, telephone }
+          url
+          address { streetAddress, postalCode }
+          logo
+        }
+      QUERY
+    )
+
+    partner_response['partnersByTag']
+  end
+
+  def pc_read_events(from_date, to_date)
+    from_date_s = from_date.strftime('%Y-%m-%d %H:%M')
+    to_date_s = to_date.strftime('%Y-%m-%d %H:%M')
+
+    event_response = do_graphql_query(
+      <<-QUERY
+        eventsByFilter(tagId: #{PLACECAL_TAG_ID}, fromDate: "#{from_date_s}", toDate: "#{to_date_s}") {
+          id
+          name
+          description
+          summary
+          startDate
+          endDate
+          publisherUrl
+          address { streetAddress, postalCode }
+          organizer { id }
+        }
+      QUERY
+    )
+
+    event_response['eventsByFilter']
+  end
+
+  #
+  #
+  #
+
+  def do_graphql_query(query)
+    response = do_request(
+      <<-GRAPHQL
+        query {
+          #{query}
+        }
+      GRAPHQL
+    )
+
+    raise "response.status != 200 (is #{response.status})\n#{response.body}" if response.status != 200
+
+    data = JSON.parse(response.body)
+    raise "Remote errors: #{data['errors']}" if data.has_key?('errors')
+
+    data['data']
+  end
+
+  def do_request(command)
+    remote.post(END_POINT) do |req|
+      req.body = { query: command }.to_json
+    end
+  end
+
+  def remote
+    @remote ||= Faraday.new(
+      url: PLACECAL_URL,
+      headers: {'Content-Type' => 'application/json'}
+    )
+  end
+end
+
+PlacecalApiSnapshotter.run if $0 == __FILE__

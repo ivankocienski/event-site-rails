@@ -11,6 +11,10 @@ A WIP project that models a very basic "event listing" site.
 - opensearch (or docker)
 - (probably other binary dependencies gems rely on)
 
+## Pulling Placecal Data
+
+The PC dataset needs to be downloaded periodically to stay up-to-date. This is just a small binary script that is run by `bin/snapshot-placecal` - it's output lives in the repo in `db/snapshots` and the data loading scripts automatically use the latest snapshot. This does not load anything in the database or do any of the processing steps mentioned below.
+
 ## Preflight
 
 Given the correct ruby version is installed and the OpenSearch server is running.

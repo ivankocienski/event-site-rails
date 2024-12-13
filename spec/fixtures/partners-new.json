@@ -1,0 +1,68 @@
+{
+  "data": {
+    "partnersByTag": [
+      {
+        "name": "Kihn and Sons",
+        "id": 10000,
+        "description": "Iure recusandae quia. Est quasi id. Vitae natus et.Neque ut dolor. Quasi non hic. Possimus rerum voluptatem.Autem dolore tenetur. Cumque velit aspernatur. Non hic commodi.Et modi velit. Quasi est voluptas. Et autem aut.Assumenda laborum necessitatibus. Reiciendis repellat excepturi. Nemo reprehenderit maiores.",
+        "logo": "https://pigment.github.io/fake-logos/logos/medium/color/3.png",
+        "contact": {
+          "email": "elliott@langosh.test"
+        },
+        "address": {
+        }
+      },
+      {
+        "name": "Carter, Kertzmann and Anderson",
+        "id": 10100,
+        "description": "Ut est occaecati. Rerum qui vel. Voluptatem repudiandae dolorem.Suscipit vel harum. Velit molestias perspiciatis. Et praesentium modi.Eaque perspiciatis odio. Excepturi alias voluptates. Aut voluptates consequatur.Facere et qui. Et quos qui. Aliquam ratione sed.Qui iure corporis. Qui quas cum. Officia dolore qui.",
+        "url": "http://waelchi.test/romeo",
+        "logo": "https://pigment.github.io/fake-logos/logos/medium/color/8.png",
+        "contact": {
+          "email": "abe.quitzon@hermiston.test",
+          "telephone": "0171 237 1914"
+        },
+        "address": {
+          "streetAddress": "640 Remedios Inlet"
+        }
+      },
+      {
+        "name": "Stehr LLC",
+        "id": 10200,
+        "description": "Modi in consequuntur. In ex minus. Soluta reprehenderit sed.Sint ex accusantium. Atque dolore praesentium. Et voluptatum voluptatem.Temporibus non quidem. Dolores modi quod. Temporibus dolore assumenda.Praesentium sunt distinctio. Atque quibusdam debitis. Assumenda nemo omnis.Adipisci amet dolore. Ipsa veniam mollitia. Deleniti quam enim.Voluptas quos unde. Quis eius voluptates. Ab dolores in.",
+        "summary": "Eos vel sit.Earum nobis tempore.Beatae et labore.",
+        "logo": "https://pigment.github.io/fake-logos/logos/medium/color/5.png",
+        "contact": {
+          "email": "laurel.block@kuvalis.example"
+        },
+        "address": {
+        }
+      },
+      {
+        "name": "Pollich, Gorczany and Fadel",
+        "id": 10300,
+        "logo": "https://pigment.github.io/fake-logos/logos/medium/color/4.png",
+        "contact": {
+          "email": "cole@daniel-ratke.test",
+          "telephone": "028 8684 5319"
+        },
+        "address": {
+          "streetAddress": "5042 Yasmin Squares",
+          "postalCode": "W1 5LH"
+        }
+      },
+      {
+        "name": "Graham, Rau and Friesen",
+        "id": 10400,
+        "description": "Aut est cum. Commodi ullam possimus. Deleniti harum natus.Rerum non veritatis. Ea quis ut. Sapiente aut explicabo.Voluptatem et ea. Ut autem eum. Culpa omnis modi.Sapiente accusantium dolore. Molestias perspiciatis quo. Ut et molestias.Eos ab mollitia. Unde neque reiciendis. Odit quos tempora.Esse dolorem unde. Praesentium magni commodi. Vel et minima.",
+        "summary": "Deserunt et libero.Repellat consectetur vel.",
+        "contact": {
+        },
+        "address": {
+          "streetAddress": "5668 Valerie Harbors",
+          "postalCode": "W8 5JB"
+        }
+      }
+    ]
+  }
+}

@@ -120,4 +120,21 @@ RSpec.describe Partner, type: :model do
       expect(partner.address_ward).to be_a(GeoEnclosure)
     end
   end
+
+  context 'value changes' do
+    it 'pokes' do
+      partner = Partner.create!(name: 'alpha', placecal_id: 123)
+      expect(partner.name_changed?).to be false
+
+      partner.name = 'alpha'
+      expect(partner.name_changed?).to be false
+
+      partner.name = 'alpha2'
+      expect(partner.name_changed?).to be true
+
+      partner.save!
+      expect(partner.name_changed?).to be false
+
+    end
+  end
 end

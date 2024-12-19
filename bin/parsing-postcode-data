@@ -151,23 +151,44 @@ module GeoDataLoader
   end
 
   def load_postcodes
+    bad_codes = {}
+
     CSV.foreach(File.join(DATA_DIR, POSTCODE_SRC), headers: true) do |row|
       row = row.to_h
 
       clean_code = row['pcd'].gsub(/\s+/, '')
 
+      enclosure_codes = [
+        row['ward'], # ward
+        row['laua'], # district
+        row['cty'],  # county
+        row['rgn'],  # region
+        row['ctry']  # country
+      ]
+
+      # ignore X99999999 codes
+      enclosure_codes = enclosure_codes.delete_if do |code|
+        if code =~ /^.9+$/
+          bad_codes[code] = (bad_codes[code] || 0) + 1
+          next true
+        end
+
+        false
+      end
+
+      raise "postcode `#{clean_code}` has no enclosures!" if enclosure_codes.empty?
+
       data = {
         postcode: row['pcd'],
-        enclosure_codes: [
-          row['ward'], # ward
-          row['laua'], # district
-          row['cty'],  # county
-          row['rgn'],  # region
-          row['ctry']  # country
-        ]
+        enclosure_codes: enclosure_codes
       }
 
       postcodes[clean_code] = data
+    end
+
+    puts "    skipped codes:"
+    bad_codes.each do |code, frequency|
+      puts "      #{code}: #{frequency}"
     end
   end
 

@@ -1,9 +1,66 @@
+require 'zip'
 
 class PartnerUpdater
-  attr_reader :partner
 
-  def initialize(partner)
+  class PostcodeLookup
+    attr_reader :version
+    attr_reader :enclosures
+    attr_reader :postcodes
+
+    def initialize(from_file)
+      data = nil
+
+      Zip::File.open(from_file) do |zip|
+        data = JSON.parse(zip.read('geo-data.json'))
+      end
+
+      @version = data['version']
+      @enclosures = data['enclosures']
+      @postcodes = data['postcodes']
+      # puts @postcodes.keys.to_json
+    end
+
+    def lookup_postcode(raw_text)
+      raw_text = raw_text.to_s.upcase.gsub(/\s+/, '')
+      return if raw_text.blank?
+
+      postcode_data = @postcodes[raw_text]
+      return if postcode_data.blank?
+
+      postcode_enclosures = postcode_data['enclosure_codes']
+      find_or_create_geo_enclosure_for postcode_enclosures
+    end
+
+    private
+
+    def find_or_create_geo_enclosure_for(enclosure_list)
+      return if enclosure_list.empty?
+
+      first_ons_id = enclosure_list.first
+
+      found = @enclosures[first_ons_id]
+      raise "could not find enclosure for ONS ID '#{first_ons_id}'" if found.blank?
+
+      @enclosures[first_ons_id]['model'] ||= GeoEnclosure.create!(
+        name: found['name'],
+        ons_id: first_ons_id,
+        ons_version: @version,
+        ons_type: found['type'],
+        parent: find_or_create_geo_enclosure_for(enclosure_list[1..-1])
+      )
+    end
+  end
+
+  #
+  #
+  #
+
+  attr_reader :partner
+  attr_reader :postcode_db
+
+  def initialize(partner, postcode_db)
     @partner = partner
+    @postcode_db = postcode_db
   end
 
   def update_and_save(new_values)
@@ -17,7 +74,7 @@ class PartnerUpdater
 
       #reindex_text_fields
 
-      #lookup_postcode
+      lookup_postcode
 
       save!
     end
@@ -78,6 +135,21 @@ class PartnerUpdater
   end
 
   def lookup_postcode
+    return unless partner.address_postcode_changed?
+
+    if partner.address_postcode.blank?
+      partner.address_ward = nil
+      return
+    end
+
+    new_geo_enclosure = postcode_db.lookup_postcode(partner.address_postcode)
+    if new_geo_enclosure.blank?
+      puts "FIXME: do something here?"
+      return
+    end
+
+    partner.address_ward = new_geo_enclosure
+
   end
 end
 

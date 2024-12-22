@@ -35,7 +35,9 @@ module AddressPostcodeLookup
         raise "postcode missing for '#{postcode_text}'" if postcode_data.blank?
 
         # puts postcode_data.to_json
-        postcode_enclosures = postcode_data['enclosure_codes']
+        postcode_enclosures = postcode_data['enclosure_codes'].keep_if { |code| code != 'S99999999' }
+        raise "no postcode enclosures for `#{postcode_text}`" if postcode_enclosures.empty?
+
         entity.address_ward = find_or_create_geo_enclosure_for(postcode_enclosures)
         entity.save!
       end

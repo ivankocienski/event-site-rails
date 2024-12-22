@@ -2,6 +2,30 @@
 require 'rails_helper'
 
 RSpec.describe PartnerUpdater do
+  GEO_DATA_SUBSET_PATH = fixture_paths.first.join('geo-data-subset.json.zip').freeze
+
+  let(:postcode_db) { PartnerUpdater::PostcodeLookup.new(GEO_DATA_SUBSET_PATH) }
+
+  describe PartnerUpdater::PostcodeLookup do
+    context '#lookup_postcode' do
+
+      it 'returns a GeoLocation if it exists' do
+        output = postcode_db.lookup_postcode('AB1 0AR')
+        expect(output).to be_a(GeoEnclosure)
+      end
+
+      it 'creates enclosures that don\'t exist' do
+        expect {
+          postcode_db.lookup_postcode 'AB1 0AR'
+        }.to change { GeoEnclosure.count }.by 3
+      end
+
+      it 'returns nil when not found' do
+        output = postcode_db.lookup_postcode('XYZ 123')
+        expect(output).to be nil
+      end
+    end
+  end
 
   let(:fields) {
     {
@@ -13,7 +37,7 @@ RSpec.describe PartnerUpdater do
       contact_telephone: 'cappa',
       url: 'delta',
       address_street: 'epsilon',
-      address_postcode: 'gamme',
+      address_postcode: '',
       logo_url: 'mu'
     }
   }
@@ -21,7 +45,7 @@ RSpec.describe PartnerUpdater do
   context 'with new partner' do
     it 'creates a partner' do
       expect {
-        partner = PartnerUpdater.new(Partner.new)
+        partner = PartnerUpdater.new(Partner.new, postcode_db)
         partner.update_fields fields
 
         partner.save!
@@ -32,7 +56,7 @@ RSpec.describe PartnerUpdater do
   describe '#update_fields' do
 
     it 'sets field values' do
-      updater = PartnerUpdater.new(Partner.new)
+      updater = PartnerUpdater.new(Partner.new, postcode_db)
       updater.update_fields fields
 
       updater.save!
@@ -46,7 +70,7 @@ RSpec.describe PartnerUpdater do
 
   describe '#render_description_html' do
     it 'is populated' do
-      updater = PartnerUpdater.new(Partner.new)
+      updater = PartnerUpdater.new(Partner.new, postcode_db)
       updater.update_and_save fields
 
       partner = Partner.last
@@ -66,19 +90,19 @@ RSpec.describe PartnerUpdater do
       new_fields = fields.dup
       new_fields[:description] = 'Alpha beta cappa'
 
-      updater = PartnerUpdater.new(Partner.new)
+      updater = PartnerUpdater.new(Partner.new, postcode_db)
       updater.update_and_save new_fields
 
       partner = Partner.last
       expect(partner.keywords.count).to eq 3
     end
 
-    context 'updating partner' do
+    context 'updating partner\'s keyword relations' do
       before :each do
         new_fields = fields.dup
         new_fields[:description] = 'Alpha beta cappa'
 
-        updater = PartnerUpdater.new(Partner.new)
+        updater = PartnerUpdater.new(Partner.new, postcode_db)
         updater.update_and_save new_fields
       end
 
@@ -87,7 +111,7 @@ RSpec.describe PartnerUpdater do
         new_fields[:description] = 'Alpha delta beta epsilon cappa'
 
         partner = Partner.last
-        updater = PartnerUpdater.new(partner)
+        updater = PartnerUpdater.new(partner, postcode_db)
         updater.update_and_save new_fields
 
         partner.reload
@@ -99,7 +123,7 @@ RSpec.describe PartnerUpdater do
         new_fields[:description] = 'Alpha beta cappa'
 
         partner = Partner.last
-        updater = PartnerUpdater.new(partner)
+        updater = PartnerUpdater.new(partner, postcode_db)
         updater.update_and_save new_fields
 
         partner.reload
@@ -112,7 +136,7 @@ RSpec.describe PartnerUpdater do
         new_fields[:description] = 'cappa epsilon delta'
 
         partner = Partner.last
-        updater = PartnerUpdater.new(partner)
+        updater = PartnerUpdater.new(partner, postcode_db)
         updater.update_and_save new_fields
 
         partner.reload
@@ -124,6 +148,65 @@ RSpec.describe PartnerUpdater do
 
   describe '#reindex_text_fields'
 
-  describe '#lookup_postcode'
+  describe '#lookup_postcode' do
+    it 'assigns new postcode' do
+      new_fields = fields.dup
+      new_fields[:address_postcode] = 'AB1 0LP'
+
+      updater = PartnerUpdater.new(Partner.new, postcode_db)
+      updater.update_and_save new_fields
+
+      partner = updater.partner
+      expect(partner.address_ward).to be_a(GeoEnclosure)
+    end
+
+    it 'changes existing postcode' do
+      fake_enclosure = GeoEnclosure.create!(
+        name: 'Fake Enclosure',
+        ons_id: 'FF999999',
+        ons_version: '2002',
+        ons_type: 'ward'
+      )
+
+      new_fields = fields.dup
+      new_fields[:address_postcode] = 'AB1 0LP'
+      new_fields[:address_geo_enclosure_id] = fake_enclosure.id
+      partner = Partner.create!(new_fields)
+
+      updater = PartnerUpdater.new(partner, postcode_db)
+
+      update_fields = fields.dup
+      update_fields[:address_postcode] = 'AB1 0DR'
+      updater.update_and_save update_fields
+
+      partner.reload
+      expect(partner.address_ward).to be_a GeoEnclosure
+      expect(partner.address_ward).not_to eq fake_enclosure
+    end
+
+    it 'removes postcode when not present' do
+      new_fields = fields.dup
+      new_fields[:address_postcode] = 'AB1 0LP'
+
+      updater = PartnerUpdater.new(Partner.new, postcode_db)
+      updater.update_and_save new_fields
+
+      partner = updater.partner
+      expect(partner.address_ward).to be_a GeoEnclosure
+
+      # remove postcode
+      update_fields = fields.dup
+      update_fields[:address_postcode] = ''
+
+      another_updater = PartnerUpdater.new(partner, postcode_db)
+      another_updater.update_and_save update_fields
+
+      partner.reload
+      expect(partner.address_ward).to be nil
+    end
+
+    pending '(TODO) does something with unknown postcodes'
+
+  end
 end
 

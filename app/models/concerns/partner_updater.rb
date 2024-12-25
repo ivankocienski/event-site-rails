@@ -57,10 +57,12 @@ class PartnerUpdater
 
   attr_reader :partner
   attr_reader :postcode_db
+  attr_reader :search_client
 
-  def initialize(partner, postcode_db)
+  def initialize(partner, postcode_db, search_client)
     @partner = partner
     @postcode_db = postcode_db
+    @search_client = search_client
   end
 
   def update_and_save(new_values)
@@ -72,7 +74,7 @@ class PartnerUpdater
 
       scan_for_keywords
 
-      #reindex_text_fields
+      reindex_text_fields
 
       lookup_postcode
 
@@ -130,6 +132,10 @@ class PartnerUpdater
   end
 
   def reindex_text_fields
+    return unless partner.description_changed? || partner.summary_changed? || partner.name_changed?
+ 
+    search_client.index index: 'partners', id: partner[:id], body: partner, refresh: true
+ 
     # does this happen automatically?
     # what about deleting the partner, does that de-index automatically?
   end
@@ -149,7 +155,6 @@ class PartnerUpdater
     end
 
     partner.address_ward = new_geo_enclosure
-
   end
 end
 
@@ -157,3 +162,11 @@ __END__
 
 I decided to use this pattern so I could keep the models thin, make the updater
 scripts less complicated and hopefully make this logic testable in specs.
+
+  This updates an entire model, which is used when importing partners, but we
+also need to update keywords when they are added / removed and fix the postcode 
+lookup code so when we have new updates to the postcode DB they will also be updated.
+
+  so something like
+- update keywords only (even if they have not changed in model)
+- update postcodes (also even if they have not changed in model)

@@ -6,6 +6,11 @@ RSpec.describe PartnerUpdater do
 
   let(:postcode_db) { PartnerUpdater::PostcodeLookup.new(GEO_DATA_SUBSET_PATH) }
 
+  before :each do
+    search_client.indices.delete(index: 'partners')
+    search_client.indices.create(index: 'partners')
+  end
+
   describe PartnerUpdater::PostcodeLookup do
     context '#lookup_postcode' do
 
@@ -27,6 +32,10 @@ RSpec.describe PartnerUpdater do
     end
   end
 
+  #
+  # updater unit tests...
+  #
+
   let(:fields) {
     {
       name: 'zeta',
@@ -41,11 +50,12 @@ RSpec.describe PartnerUpdater do
       logo_url: 'mu'
     }
   }
+  
 
   context 'with new partner' do
     it 'creates a partner' do
       expect {
-        partner = PartnerUpdater.new(Partner.new, postcode_db)
+        partner = PartnerUpdater.new(Partner.new, postcode_db, search_client)
         partner.update_fields fields
 
         partner.save!
@@ -54,9 +64,8 @@ RSpec.describe PartnerUpdater do
   end
 
   describe '#update_fields' do
-
     it 'sets field values' do
-      updater = PartnerUpdater.new(Partner.new, postcode_db)
+      updater = PartnerUpdater.new(Partner.new, postcode_db, search_client)
       updater.update_fields fields
 
       updater.save!
@@ -70,7 +79,7 @@ RSpec.describe PartnerUpdater do
 
   describe '#render_description_html' do
     it 'is populated' do
-      updater = PartnerUpdater.new(Partner.new, postcode_db)
+      updater = PartnerUpdater.new(Partner.new, postcode_db, search_client)
       updater.update_and_save fields
 
       partner = Partner.last
@@ -90,7 +99,7 @@ RSpec.describe PartnerUpdater do
       new_fields = fields.dup
       new_fields[:description] = 'Alpha beta cappa'
 
-      updater = PartnerUpdater.new(Partner.new, postcode_db)
+      updater = PartnerUpdater.new(Partner.new, postcode_db, search_client)
       updater.update_and_save new_fields
 
       partner = Partner.last
@@ -102,7 +111,7 @@ RSpec.describe PartnerUpdater do
         new_fields = fields.dup
         new_fields[:description] = 'Alpha beta cappa'
 
-        updater = PartnerUpdater.new(Partner.new, postcode_db)
+        updater = PartnerUpdater.new(Partner.new, postcode_db, search_client)
         updater.update_and_save new_fields
       end
 
@@ -111,7 +120,7 @@ RSpec.describe PartnerUpdater do
         new_fields[:description] = 'Alpha delta beta epsilon cappa'
 
         partner = Partner.last
-        updater = PartnerUpdater.new(partner, postcode_db)
+        updater = PartnerUpdater.new(partner, postcode_db, search_client)
         updater.update_and_save new_fields
 
         partner.reload
@@ -123,7 +132,7 @@ RSpec.describe PartnerUpdater do
         new_fields[:description] = 'Alpha beta cappa'
 
         partner = Partner.last
-        updater = PartnerUpdater.new(partner, postcode_db)
+        updater = PartnerUpdater.new(partner, postcode_db, search_client)
         updater.update_and_save new_fields
 
         partner.reload
@@ -136,7 +145,7 @@ RSpec.describe PartnerUpdater do
         new_fields[:description] = 'cappa epsilon delta'
 
         partner = Partner.last
-        updater = PartnerUpdater.new(partner, postcode_db)
+        updater = PartnerUpdater.new(partner, postcode_db, search_client)
         updater.update_and_save new_fields
 
         partner.reload
@@ -146,14 +155,26 @@ RSpec.describe PartnerUpdater do
     end
   end
 
-  describe '#reindex_text_fields'
+  describe '#reindex_text_fields' do
+    it 'rescans partner' do
+      new_fields = fields.dup
+
+      updater = PartnerUpdater.new(Partner.new, postcode_db, search_client)
+      updater.update_and_save new_fields
+      sleep 1 # ugh
+
+      found = Partner.with_fuzzy_string('description of alpha').first
+
+      expect(found).to be_a(Partner)
+    end
+  end
 
   describe '#lookup_postcode' do
     it 'assigns new postcode' do
       new_fields = fields.dup
       new_fields[:address_postcode] = 'AB1 0LP'
 
-      updater = PartnerUpdater.new(Partner.new, postcode_db)
+      updater = PartnerUpdater.new(Partner.new, postcode_db, search_client)
       updater.update_and_save new_fields
 
       partner = updater.partner
@@ -173,7 +194,7 @@ RSpec.describe PartnerUpdater do
       new_fields[:address_geo_enclosure_id] = fake_enclosure.id
       partner = Partner.create!(new_fields)
 
-      updater = PartnerUpdater.new(partner, postcode_db)
+      updater = PartnerUpdater.new(partner, postcode_db, search_client)
 
       update_fields = fields.dup
       update_fields[:address_postcode] = 'AB1 0DR'
@@ -188,7 +209,7 @@ RSpec.describe PartnerUpdater do
       new_fields = fields.dup
       new_fields[:address_postcode] = 'AB1 0LP'
 
-      updater = PartnerUpdater.new(Partner.new, postcode_db)
+      updater = PartnerUpdater.new(Partner.new, postcode_db, search_client)
       updater.update_and_save new_fields
 
       partner = updater.partner
@@ -198,7 +219,7 @@ RSpec.describe PartnerUpdater do
       update_fields = fields.dup
       update_fields[:address_postcode] = ''
 
-      another_updater = PartnerUpdater.new(partner, postcode_db)
+      another_updater = PartnerUpdater.new(partner, postcode_db, search_client)
       another_updater.update_and_save update_fields
 
       partner.reload
@@ -207,6 +228,15 @@ RSpec.describe PartnerUpdater do
 
     pending '(TODO) does something with unknown postcodes'
 
+  end
+
+  def search_client
+    @search_client ||= OpenSearch::Client.new(
+      host: ENV['OPENSEARCH_URL'],
+      user: ENV['OPENSEARCH_USER'],
+      password: ENV['OPENSEARCH_PASSWORD'],
+      transport_options: { ssl: { verify: false } }
+    )
   end
 end
 

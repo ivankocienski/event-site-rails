@@ -32,6 +32,14 @@ Given the correct ruby version is installed and the OpenSearch server is running
 
 `cd` into directory and run `rails s` then navigate to http://localhost:3000
 
+## Updating data
+
+**WARNING:** This is currently only for *partners* - events cannot be updated at this time!
+
+During the lifetime of ESR the data will age and may lose relavance, i.e. events will expire, new events, partners changing names or locations and so on.
+
+To update ESR you first need to grab a PlaceCal snapshot with `bin/snapshot-placecal` that will output a file in `db/fixtures/`. Once that is done run `bin/rails db:import:update_placecal_partners[snapshot_path]` and that will make the necasery adjustments.
+
 ## Data disclaimer
 
 The data from this project was pulled from the publicly available API provided by [PlaceCal](https://placecal.org/). No personal or private information is in this project.

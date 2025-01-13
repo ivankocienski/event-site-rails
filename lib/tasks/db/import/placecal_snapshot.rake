@@ -123,6 +123,7 @@ namespace :db do
   namespace :import do
     desc 'Imports partners from db fixture directory'
     task placecal_snapshot: :environment do
+      raise "Warning! This will erase and re-import everything!"
       PlacecalSnapshotImporter.run
     end
   end

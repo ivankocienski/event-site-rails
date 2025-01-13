@@ -1,22 +1,28 @@
 require 'rails_helper'
-require_relative '../../hacks/data-import-updater'
 
-RSpec.describe DataImporterUpdaterTask do
+RSpec.describe PartnerImportUpdater do
   # NOTE: the fixture data was created by
   #   /hacks/fake-partner-generator.rb
+
+  let(:geo_data_subset_path) { fixture_paths.first.join('geo-data-subset.json.zip') }
+  let(:postcode_db) { PartnerUpdater::PostcodeLookup.new(geo_data_subset_path) }
+
+  before :each do
+    PartnerImportUpdater.postcode_db = postcode_db
+  end
 
   context 'adding new partners' do
     it 'creates records' do
       file_path = Rails.root.join('spec/fixtures/partners-new.json')
-      DataImporterUpdaterTask.process_from file_path
+      PartnerImportUpdater.process_from file_path
 
       expect(Partner.count).to eq 5
     end
 
     it 'does not create duplicates' do
       file_path = Rails.root.join('spec/fixtures/partners-new.json')
-      DataImporterUpdaterTask.process_from file_path
-      DataImporterUpdaterTask.process_from file_path
+      PartnerImportUpdater.process_from file_path
+      PartnerImportUpdater.process_from file_path
 
       expect(Partner.count).to eq 5
     end
@@ -25,10 +31,10 @@ RSpec.describe DataImporterUpdaterTask do
   context 'updating existing members' do
     it 'updates existing records' do
       file_path = Rails.root.join('spec/fixtures/partners-new.json')
-      DataImporterUpdaterTask.process_from file_path
+      PartnerImportUpdater.process_from file_path
 
       file_path = Rails.root.join('spec/fixtures/partners-update-1.json')
-      DataImporterUpdaterTask.process_from file_path
+      PartnerImportUpdater.process_from file_path
 
       expect(Partner.count).to eq 10
     end
@@ -37,12 +43,12 @@ RSpec.describe DataImporterUpdaterTask do
   context 'removing partners' do
     it 'destroys records' do
       file_path = Rails.root.join('spec/fixtures/partners-update-1.json')
-      DataImporterUpdaterTask.process_from file_path
+      PartnerImportUpdater.process_from file_path
 
       expect(Partner.count).to eq 10
 
       file_path = Rails.root.join('spec/fixtures/partners-remove.json')
-      DataImporterUpdaterTask.process_from file_path
+      PartnerImportUpdater.process_from file_path
 
       expect(Partner.count).to eq 7
     end

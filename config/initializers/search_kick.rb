@@ -1,18 +1,30 @@
 
-module SearchKickConfigurator
+module AppSearchSystem
   extend self
 
-  def run
+  def client
+    return @client if @client
+
     raise "FIXME: properly configure opensearch in production" if Rails.env.production?
 
-    # see https://rubydoc.info/gems/opensearch-transport#configuration
     Searchkick.client_options[:transport_options] = { ssl: { verify: false } }
+    Searchkick.client_options[:host] = ENV['OPENSEARCH_URL']
+    Searchkick.client_options[:user] = ENV['OPENSEARCH_USER']
+    Searchkick.client_options[:password] = ENV['OPENSEARCH_PASSWORD']
 
-    begin
-      Searchkick.client.cluster.health
+    #client = OpenSearch::Client.new(
+    #  host: ENV['OPENSEARCH_URL'],
+    #  user: ENV['OPENSEARCH_USER'],
+    #  password: ENV['OPENSEARCH_PASSWORD'],
+    #  transport_options: ({ ssl: { verify: false } } unless Rails.env.production?)
+    #)
 
-    rescue Faraday::ConnectionFailed => e
-      abort <<-MSG
+    Searchkick.client.cluster.health
+
+    @client = Searchkick.client
+
+  rescue Faraday::ConnectionFailed => e
+    abort <<-MSG
 
       ---------------------------------------------
       -                                           -
@@ -20,10 +32,8 @@ module SearchKickConfigurator
       -                                           -
       ---------------------------------------------
 
-      MSG
-    end
+    MSG
   end
 end
 
-SearchKickConfigurator.run
-
+AppSearchSystem.client # load this on initialize

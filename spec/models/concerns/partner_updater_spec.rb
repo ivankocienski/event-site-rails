@@ -2,9 +2,10 @@
 require 'rails_helper'
 
 RSpec.describe PartnerUpdater do
-  GEO_DATA_SUBSET_PATH = fixture_paths.first.join('geo-data-subset.json.zip').freeze
+  let(:geo_data_subset_path) { fixture_paths.first.join('geo-data-subset.json.zip') }
 
-  let(:postcode_db) { PartnerUpdater::PostcodeLookup.new(GEO_DATA_SUBSET_PATH) }
+  let(:search_client) { AppSearchSystem.client }
+  let(:postcode_db) { PartnerUpdater::PostcodeLookup.new(geo_data_subset_path) }
 
   before :each do
     search_client.indices.delete(index: 'partners')
@@ -227,16 +228,6 @@ RSpec.describe PartnerUpdater do
     end
 
     pending '(TODO) does something with unknown postcodes'
-
-  end
-
-  def search_client
-    @search_client ||= OpenSearch::Client.new(
-      host: ENV['OPENSEARCH_URL'],
-      user: ENV['OPENSEARCH_USER'],
-      password: ENV['OPENSEARCH_PASSWORD'],
-      transport_options: { ssl: { verify: false } }
-    )
   end
 end
 

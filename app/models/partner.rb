@@ -23,6 +23,8 @@ class Partner < ApplicationRecord
     string_value = string_value.to_s.strip
     return none if string_value.empty?
     
+    AppSearchSystem.client
+
     # uses searchkick
     string_match_ids = Partner.search(string_value, select: [:id], load: false).map(&:id)
     # puts "string_match_ids=#{string_match_ids.to_json}"

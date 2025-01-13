@@ -3,12 +3,7 @@ module Indexer
   extend self
 
   def client
-    @client ||= OpenSearch::Client.new(
-      host: ENV['OPENSEARCH_URL'],
-      user: ENV['OPENSEARCH_USER'],
-      password: ENV['OPENSEARCH_PASSWORD'],
-      transport_options: ({ ssl: { verify: false } } unless Rails.env.production?)
-    )
+    AppSearchSystem.client
   end
 
   def ingest_partners

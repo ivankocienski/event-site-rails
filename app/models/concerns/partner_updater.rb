@@ -150,7 +150,7 @@ class PartnerUpdater
 
     new_geo_enclosure = postcode_db.lookup_postcode(partner.address_postcode)
     if new_geo_enclosure.blank?
-      puts "FIXME: do something here?"
+      puts "FIXME: do something here? (#{partner.address_postcode})"
       return
     end
 

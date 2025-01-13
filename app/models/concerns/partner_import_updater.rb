@@ -1,20 +1,15 @@
 
-require_relative '../config/environment'
-
-module DataImporterUpdaterTask
+module PartnerImportUpdater
   extend self
 
   attr_accessor :postcode_db
 
-#  def run
-#    source_file = Dir.glob(
-#      Rails.root.join('/db/snapshots/*-snapshot.json')).sort.last
-#    raise "No snapshots found" if source_file.blank?
-#
-#    process_from source_file
-#  end
-
   def process_from(source_file)
+    if source_file.blank?
+      logs "Error: missing source file"
+      return
+    end
+
     logs "Data Importer/Updater"
     logs "  using source_file #{source_file}"
 
@@ -26,7 +21,7 @@ module DataImporterUpdaterTask
 
     placecal_partners.each do |pc_partner|
       partner = create_or_update_partner(pc_partner)
-      remove_partners.delete pc_partner['id']
+      delete_partners.delete pc_partner['id']
     end
 
     Partner.where(placecal_id: delete_partners).destroy_all
@@ -75,24 +70,3 @@ module DataImporterUpdaterTask
     puts message
   end
 end
-
-# DataImporterUpdaterTask.run if $0 == __FILE__
-
-
-__END__
-
-Thinking
-
-uhh... what the heck was i doing here...
-This is invoked by a rake task like `rails db:import:snapshot[path/to/snapshot.json]`
-So its job is exclusively to apply that snapshot to the database
-(So no figuring out which file to load, or to load multiple files)
-
-
-TODO:
-- postcode_db
-- updater code here
-  ...
-- moving this in to a lib for rake task calling
-- tests
-
